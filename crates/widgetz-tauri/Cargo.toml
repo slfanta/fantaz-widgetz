@@ -1,0 +1,14 @@
+[package]
+name = "widgetz-tauri"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+links = "tauri-plugin-fantaz-widgetz"
+build = "build.rs"
+[dependencies]
+tauri.workspace = true
+widgetz-core.workspace = true
+serde.workspace = true
+tokio = {version="1",features=["sync","time"]}
+[build-dependencies]
+tauri-plugin = {version="2",features=["build"]}

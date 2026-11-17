@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ftzml version="1">
+  <pad id="example" opacity="10">
+    <text id="moving">Bounded linear text position</text>
+    <divider id="separator"/>
+    <text id="tint">Linear color and inherited opacity</text>
+  </pad>
+  <animate target="moving" property="x" from="0" to="-60" ms="6000" repeat="false"/>
+  <animate target="tint" property="color" from="#b9c5d9" to="#83e6ae" ms="6000"/>
+  <animate target="example" property="opacity" from="10" to="8" ms="6000"/>
+</ftzml>
