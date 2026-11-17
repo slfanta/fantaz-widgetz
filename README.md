@@ -12,7 +12,7 @@ npm run dev             # browser/in-app demo
 npm run tauri dev       # native demo + actual corner notifications
 npm test
 cargo test --workspace
-npm run tauri build -- --no-bundle
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-release.ps1
 ```
 
 Node 22+, Rust stable and the normal [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) are required. Windows uses the installed WebView2 runtime; Linux uses WebKitGTK. Versioned deliverables are in `releases/`.
@@ -36,6 +36,8 @@ view.onAction(action => { if (action === 'dismiss') view.destroy(); });
 
 The project-neutral notification template uses two rows. Its desktop host is **284 × 64 logical px**, bottom-right inside the work area, topmost, no taskbar button, no focus stealing, no OS toast. Close `[x]` or timeout dismisses it. Hover/focus holds the timeout. Success lasts 8 seconds; failure 12. One visible pad, bounded FIFO queue, delivery acknowledgment and no idle polling.
 
+FTZML is the XML save/share format: `parseFTZML(xml)` / `saveFTZML(design)`. It contains only this limited vocabulary, palette and simple animations. Three `.ftzml` examples ship in `public/templates/`; no visual editor is included.
+
 | Location | Responsibility |
 |---|---|
 | `packages/widgetz` | Validated TypeScript model, small DOM renderer, fixed CSS, bounded animation, templates and optional Tauri client |
@@ -44,4 +46,4 @@ The project-neutral notification template uses two rows. Its desktop host is **2
 | `src` + `src-tauri` | Standalone demonstration, not library API |
 | `docs` | Philosophy, API, integration, platform limits and agent rules |
 
-The renderer works in desktop/mobile app content. The native corner window is a **desktop** adapter; Android/iOS system overlays are not implemented. See [integration](docs/INTEGRATION.md), [philosophy](docs/PHILOSOPHY.md) and [API](docs/API.md).
+The renderer works in desktop/mobile app content. The native corner window is a **desktop** adapter; Android/iOS system overlays are not implemented. See [integration](docs/INTEGRATION.md), [philosophy](docs/PHILOSOPHY.md), [API](docs/API.md), [FTZML](docs/FTZML.md) and [build/cache rules](docs/BUILD.md).

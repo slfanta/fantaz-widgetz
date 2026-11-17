@@ -1,0 +1,6 @@
+{
+  "tauriVersion": "2.12.6",
+  "tauriSourceSha256": "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
+  "fingerprint": "SHA-256 of sorted relative src file paths plus each file SHA-256, LF separated, UTF-8; see scripts/prebuild-native.ps1",
+  "policy": "Tauri registry sources are immutable. Review/update this baseline only for an intentional native dependency revision; never for widget appearance edits. Cargo.lock freezes all dependency versions."
+}

@@ -5,7 +5,7 @@ const paletteKeys: (keyof Palette)[]=['surface','text','muted','accent','success
 export function fail(message:string):never {throw new Error(`Fantaz Widgetz: ${message}`);}
 function object(v:unknown,label:string):Record<string,unknown>{if(!v||typeof v!=='object'||Array.isArray(v))fail(`${label} must be an object`);return v as Record<string,unknown>;}
 function keys(v:Record<string,unknown>,allowed:string[],label:string){for(const k of Object.keys(v))if(!allowed.includes(k))fail(`${label}: unsupported '${k}'`);}
-function text(v:unknown,label:string,max=4096){if(typeof v!=='string'||v.length>max)fail(`${label} must be text of at most ${max} characters`);}
+function text(v:unknown,label:string,max=4096){if(typeof v!=='string'||v.length>max)fail(`${label} must be text of at most ${max} characters`);if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/.test(v))fail(`${label} contains characters not representable in XML 1.0`);}
 function choice(v:unknown,values:unknown[],label:string){if(!values.includes(v))fail(`${label} must be ${values.join(' / ')}`);}
 export function opacity(v:unknown){if(!Number.isInteger(v)||Number(v)<1||Number(v)>10)fail('opacity must be an integer 1–10');return (Number(v)-1)/9;}
 export function color(v:unknown):asserts v is `#${string}` {if(typeof v!=='string'||!/^#[0-9a-f]{6}$/i.test(v))fail('color must be #RRGGBB');}
@@ -20,7 +20,7 @@ export function validatePad(value:unknown):asserts value is Pad {
  const ids=new Set<string>();let count=0;
  function walk(input:unknown,depth:number,root=false){
   const n=object(input,'element');const t=String(n.type);
-  if(!(t in fields))fail(`unknown element '${t}'`);if(++count>64||depth>8)fail('design exceeds 64 elements or 8 layout levels');
+  if(!Object.hasOwn(fields,t))fail(`unknown element '${t}'`);if(++count>64||depth>8)fail('design exceeds 64 elements or 8 layout levels');
   keys(n,[...common,...fields[t]],t);if(root?t!=='pad':t==='pad')fail('exactly one outer pad is required');
   if(typeof n.id!=='string'||!(/^[a-z][a-z0-9_-]{0,63}$/i.test(n.id)))fail('id must start with a letter, max 64 letters/digits/_/-');
   if(ids.has(n.id))fail(`duplicate id '${n.id}'`);ids.add(n.id);

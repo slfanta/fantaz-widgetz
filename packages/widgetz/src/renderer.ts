@@ -24,6 +24,7 @@ function icon(source:IconSource):HTMLElement {
 export function mount(target:HTMLElement):WidgetView {
  const records=new Map<string,RecordNode>();const actions=new Set<(id:string)=>void>();
  const motions=new Map<string,{animation:Animation;motion:Motion}>();
+ const declared=new Map<string,Motion>();
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let current:Design|null=null;let dead=false;
  const observer=new ResizeObserver(entries=>{for(const e of entries){const r=records.get((e.target as HTMLElement).dataset.ftzId!);if(r)measure(r);}});
  function cancelRoll(r:RecordNode){r.rolling?.cancel();r.rolling=undefined;r.distance=undefined;if(r.copy)r.copy.hidden=true;r.el.dataset.rolling='false';}
@@ -36,7 +37,7 @@ export function mount(target:HTMLElement):WidgetView {
   cancelRoll(r);r.copy.hidden=false;r.el.dataset.rolling='true';r.distance=distance;
   r.rolling=r.track.animate([{transform:'translateX(0)'},{transform:`translateX(${-distance}px)`}],{duration:Math.max(2000,distance/24*1000),iterations:Infinity,easing:'linear'});
  }
- function stopMotion(key:string){const m=motions.get(key);if(!m)return;m.animation.cancel();motions.delete(key);const r=records.get(m.motion.id);if(r&&m.motion.property==='x'){r.manualX=false;measure(r);}}
+ function stopMotion(key:string,forget=true){if(forget)declared.delete(key);const m=motions.get(key);if(!m)return;m.animation.cancel();motions.delete(key);const r=records.get(m.motion.id);if(r&&m.motion.property==='x'){r.manualX=false;measure(r);}}
  function newRecord(spec:Node):RecordNode {
   const el=document.createElement(spec.type==='button'?'button':'div');el.className=`fw-${spec.type}`;el.dataset.ftzId=spec.id;
   const r:RecordNode={el,spec};
@@ -52,7 +53,8 @@ export function mount(target:HTMLElement):WidgetView {
  function patch(r:RecordNode,s:Node,fresh:boolean){
   const old=r.spec;
   if(fresh||old.opacity!==s.opacity){stopMotion(s.id+':opacity');r.el.style.opacity=s.opacity===undefined?'':String(opacity(s.opacity));}
-  if('color'in s&&(fresh||!('color'in old)||old.color!==s.color)){stopMotion(s.id+':color');r.el.style.color=s.color||'';}
+  const newColor='color'in s?s.color:undefined;const oldColor='color'in old?old.color:undefined;
+  if(fresh||newColor!==oldColor){stopMotion(s.id+':color');r.el.style.color=newColor||'';}
   if(s.type==='pad')for(const [k,v]of Object.entries({...{surface:'#171b2a',text:'#e7eef9',muted:'#b9c5d9',accent:'#ad94ff',success:'#83e6ae',failure:'#f1a7b3',warning:'#e6c36a',border:'#665691',divider:'#38364a'},...s.palette}))r.el.style.setProperty('--fw-'+k,v);
   switch(s.type){
    case 'text':{
@@ -62,7 +64,7 @@ export function mount(target:HTMLElement):WidgetView {
     // Focusable overflowing fields retain manual reading when motion is off.
     r.el.tabIndex=s.overflow==='roll'?0:-1;break;
    }
-   case 'icon':if(fresh||old.type!=='icon'||JSON.stringify(old.source)!==JSON.stringify(s.source))r.el.replaceChildren(...icon(s.source).childNodes);if(s.label){r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);}else r.el.setAttribute('aria-hidden','true');break;
+   case 'icon':if(fresh||old.type!=='icon'||JSON.stringify(old.source)!==JSON.stringify(s.source))r.el.replaceChildren(...icon(s.source).childNodes);if(s.label){r.el.removeAttribute('aria-hidden');r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);}else{r.el.removeAttribute('role');r.el.removeAttribute('aria-label');r.el.setAttribute('aria-hidden','true');}break;
    case 'led':r.el.dataset.state=s.state;r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);break;
    case 'progress':r.el.firstElementChild!.setAttribute('style',`transform:scaleX(${s.value})`);r.el.setAttribute('aria-valuenow',String(Math.round(s.value*100)));r.el.setAttribute('aria-label',s.label);break;
    case 'button':{
@@ -87,27 +89,28 @@ export function mount(target:HTMLElement):WidgetView {
   current={version:1,pad:next,animations:current?.animations?.filter(a=>seen.has(a.id))};
   for(const r of records.values())measure(r);
  }
- function remove(id:string){const r=records.get(id);if(!r)return;for(const key of [...motions.keys()])if(key.startsWith(id+':'))stopMotion(key);cancelRoll(r);observer.unobserve(r.el);r.el.remove();records.delete(id);}
+ function remove(id:string){const r=records.get(id);if(!r)return;for(const key of [...declared.keys()])if(key.startsWith(id+':'))stopMotion(key);cancelRoll(r);observer.unobserve(r.el);r.el.remove();records.delete(id);}
  function animate(m:Motion){
-  if(dead||!current)fail('mount/update a pad first');validateMotion(m,current.pad);const key=m.id+':'+m.property;stopMotion(key);const r=records.get(m.id)!;
+  if(dead||!current)fail('mount/update a pad first');validateMotion(m,current.pad);const key=m.id+':'+m.property;stopMotion(key);const declaration=structuredClone(m);declared.set(key,declaration);const r=records.get(m.id)!;
   const el=m.property==='x'?r.track!:r.el;
   let frames:Keyframe[];
   if(m.property==='x'){cancelRoll(r);r.manualX=true;frames=[{transform:`translateX(${m.from}px)`},{transform:`translateX(${m.to}px)`}];}
   else if(m.property==='opacity')frames=[{opacity:opacity(m.from)},{opacity:opacity(m.to)}];
   else {color(m.from);color(m.to);frames=[{color:m.from},{color:m.to}];}
-  if(reduced.matches){if(m.property==='x')r.manualX=false;return ()=>{};}
+  const cancel=()=>{if(declared.get(key)===declaration)stopMotion(key);};
+  if(reduced.matches){if(m.property==='x')r.manualX=false;return cancel;}
   const animation=el.animate(frames,{duration:m.durationMs,iterations:m.repeat?Infinity:1,fill:'forwards',easing:'linear'});motions.set(key,{animation,motion:structuredClone(m)});
-  return ()=>{if(motions.get(key)?.animation===animation)stopMotion(key);};
+  return cancel;
  }
  function mutate(id:string,fn:(n:Node)=>void){if(!current)fail('update a pad first');const pad=structuredClone(current.pad);let found=false;function walk(n:Node){if(n.id===id){fn(n);found=true;}if('children'in n)n.children.forEach(walk);}walk(pad);if(!found)fail(`unknown id '${id}'`);update(pad);}
  const click=(e:Event)=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('.fw-button');if(!b||!target.contains(b)||b.disabled)return;for(const f of actions)f(b.dataset.action!);};
  const context=(e:Event)=>e.preventDefault();
- const motionChange=()=>{for(const key of [...motions.keys()])stopMotion(key);for(const r of records.values())measure(r);};
+ const motionChange=()=>{for(const key of [...motions.keys()])stopMotion(key,false);if(!reduced.matches)for(const m of [...declared.values()])animate(m);for(const r of records.values())measure(r);};
  target.addEventListener('click',click);target.addEventListener('contextmenu',context);reduced.addEventListener('change',motionChange);
  return {
   update,animate,
-  load(d){validateDesign(d);for(const key of [...motions.keys()])stopMotion(key);update(d.pad);current=structuredClone(d);for(const m of d.animations||[])animate(m);},
-  design(){if(!current)fail('no design loaded');return structuredClone({...current,animations:[...motions.values()].map(a=>a.motion)});},
+  load(d){validateDesign(d);for(const key of [...declared.keys()])stopMotion(key);update(d.pad);current=structuredClone(d);for(const m of d.animations||[])animate(m);},
+  design(){if(!current)fail('no design loaded');return structuredClone({...current,animations:[...declared.values()]});},
   setText(id,content){mutate(id,n=>{if(n.type!=='text')fail('setText needs text');n.content=content;});},
   setIcon(id,source){mutate(id,n=>{if(n.type!=='icon')fail('setIcon needs icon');n.source=source;});},
   setProgress(id,value){mutate(id,n=>{if(n.type!=='progress')fail('setProgress needs progress');n.value=value;});},

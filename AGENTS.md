@@ -12,3 +12,5 @@ Read README.md and docs/{PHILOSOPHY,API,INTEGRATION}.md before changes. Work onl
 - Mobile means embedded rendering. No claim of mobile OS overlay or Linux/macOS certification from Windows tests.
 - Test queue pressure/order, stale delivery events, timeout/hover, compact overflow, reduced motion, injection/unknown fields, opacity and teardown. Native fixtures use this demo's isolated profile, never live user downloaders.
 - Keep API/docs/validation/versioned EXE/source aligned. Git checkpoints and named local tags. Do not track target/node_modules/dist/profile files.
+- Every new version OR revision needs its own commit and named checkpoint tag. Never move/overwrite prior tags or versioned EXEs. Use scripts/checkpoint.ps1 only after validation.
+- Tauri is a locked immutable dependency. Read docs/BUILD.md. Prebuild static .rlib dependencies and reuse the stable Cargo cache; never edit dependency registry sources or cargo-clean for appearance work. Final link verifies runtime archives/source fingerprints. Legitimate dependency/toolchain changes need a reviewed new checkpoint.

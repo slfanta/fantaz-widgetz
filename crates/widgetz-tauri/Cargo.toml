@@ -9,6 +9,8 @@ build = "build.rs"
 tauri.workspace = true
 widgetz-core.workspace = true
 serde.workspace = true
-tokio = {version="1",features=["sync","time"]}
+tokio = {version="1",features=["sync","time","macros"]}
 [build-dependencies]
 tauri-plugin = {version="2",features=["build"]}
+[target.'cfg(windows)'.dependencies]
+windows-sys = {version="0.61",features=["Win32_UI_WindowsAndMessaging"]}

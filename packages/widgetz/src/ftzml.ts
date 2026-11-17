@@ -18,7 +18,7 @@ export function parseFTZML(xml:string):Design {
  const version=attributes(root,['version']).version;if(version!=='1')fail('FTZML version must be 1');
  let pad:Pad|undefined;let palette:Partial<Palette>|undefined;const animations:Motion[]=[];
  function element(el:globalThis.Element,depth:number):Node {
-  if(depth>8)fail('FTZML exceeds 8 layout levels');const type=el.tagName;if(!attrs[type])fail(`FTZML unknown element <${type}>`);
+  if(depth>8)fail('FTZML exceeds 8 layout levels');const type=el.tagName;if(!Object.hasOwn(attrs,type))fail(`FTZML unknown element <${type}>`);
   const a=attributes(el,attrs[type]);const n:Record<string,unknown>={type,...a};
   if(a.opacity!==undefined)n.opacity=number(a.opacity,'opacity');
   if(type==='pad'||type==='row'||type==='column'){

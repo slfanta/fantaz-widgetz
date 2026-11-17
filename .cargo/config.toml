@@ -1,0 +1,3 @@
+# Keep one stable project-local artifact cache; never cargo clean for UI edits.
+[build]
+target-dir = "target"
