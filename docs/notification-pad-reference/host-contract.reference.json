@@ -1,0 +1,15 @@
+{
+  "referenceOnly": true,
+  "description": "Host requirements; not a Tauri configuration file or Fantaz API input.",
+  "designFormat": "FTZML v1",
+  "libraryCompatibility": "@fantaz/widgetz 0.1.0",
+  "desktopLogicalSize": { "width": 360, "height": 88 },
+  "placement": { "monitor": "primary", "area": "work area", "corner": "bottom-right", "marginLogicalPixels": 16 },
+  "window": { "decorations": false, "resizable": false, "alwaysOnTop": true, "skipTaskbar": true, "focusable": false, "focused": false, "visibleInitially": false, "shadow": false, "transparent": true, "nativeBackgroundRGBA": [0, 0, 0, 0] },
+  "padOpacityLevel": 9,
+  "opacityMapping": "(level - 1) / 9; level 9 = 88.89% opacity, 11.11% transparency",
+  "lifetimeMilliseconds": { "success": 8000, "failure": 12000 },
+  "lifecycle": { "queueOwner": "existing host queue, or optional adapter if it fits", "startAfterNativeShowAcknowledged": true, "holdRemainingOnHoverOrFocus": true, "dismissAction": "dismiss", "bindAllActionsToCurrentNoticeID": true, "nativeClockOwnsExpiry": true },
+  "windows": { "showVerb": "SW_SHOWNOACTIVATE", "hideVerb": "SW_HIDE", "setExtendedStyle": "WS_EX_TOOLWINDOW", "clearExtendedStyle": "WS_EX_APPWINDOW", "reassertToolStyleAfterShow": true, "asyncCommandsWithoutQueueLockAcrossNativeCalls": true },
+  "platformLimits": "Windows reference behavior; other compositors require verification. macOS transparent WebViews may require a separately reviewed private API configuration. This desktop composition is not the touch layout."
+}

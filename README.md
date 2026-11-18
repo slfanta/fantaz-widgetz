@@ -2,6 +2,11 @@
 
 A tiny, style-predetermined widget vocabulary. Compact desktop pads and in-app widgets, with an optional **Tauri 2** corner-notification adapter. No UI component runtime, font choices, rounded panels, or application-specific branding.
 
+For agents reusing the larger result pad from the downloader project, start with
+the [360 × 88 notification reference bundle](docs/notification-pad-reference/README.md):
+success/failure FTZML, API composition, preview, host contract and integration
+guide. This adds reference assets; the 284 × 64 demo/adapter defaults stay intact.
+
 The reference is the compact two-row floating monitor: regular text, a small app icon, restrained LED, faint divider and almost console-like density. This is an independent project; it does not modify or depend on the reference downloader.
 
 ## Run

@@ -1,5 +1,11 @@
 # Host integration and boundaries
 
+For the larger 360 × 88 result pad with independent title/detail rows and
+opacity 9, use the [agent reference bundle](notification-pad-reference/README.md).
+It contains saved FTZML designs and API composition, plus the app-owned native
+window/lifetime contract. The optional adapter described below remains 284 × 64
+in 0.1.0; this reference does not add a size option or change that default.
+
 ## In-app content (desktop/mobile)
 
 Build the library (`npm run build:library`), then depend on `@fantaz/widgetz` from this workspace or a package created with `npm pack --workspace @fantaz/widgetz`. Import `@fantaz/widgetz/style.css` once. The host gives a mount element a compact width/height; `mount(element)` creates only the predetermined elements inside it. No React/Vue is required. A larger application may use any UI stack outside the widget.
@@ -56,9 +62,14 @@ Platform runtime prerequisites remain: Windows WebView2, Linux WebKitGTK, macOS 
 
 Windows specifics are confined to the adapter: show uses `SW_SHOWNOACTIVATE`, hide uses the matching native hide verb, and the HWND is marked as a tool window with `WS_EX_APPWINDOW` cleared. Tao may reapply its cached style on show, so the flags are enforced after show too. Commands that position/show/hide run asynchronously to avoid blocking WebView2's UI thread. Do not switch back to a synchronous native-show command or hide through stale cached visibility; these regressions were caught by the standalone native fixture. Tauri/Wry/Tao sources remain unchanged.
 
-## Planned SexBJCam consumption
+## SexBJCam consumption and reusable reference
 
-This repository currently modifies **no SexBJCam source, extension, downloader or live task**. A future integration should replace only its notification presentation/adapter: keep its committed-success/final-failure source events, existing IDs, delivery acknowledgments and task/status boundaries. Supply its icon and palette through Fantaz's limited appearance fields. Preserve widget/main/tray behavior and downloader settings. Do not duplicate CSS into that project or add per-consumer padding/radius/font overrides; improve the reusable predetermined template here if a real rendering issue is found.
+This repository modifies **no SexBJCam source, extension, downloader or live task**. A consuming integration should replace only its notification presentation/adapter: keep its committed-success/final-failure source events, existing IDs, delivery acknowledgments and task/status boundaries. Supply its icon and palette through Fantaz's limited appearance fields. Preserve widget/main/tray behavior and downloader settings. Do not duplicate CSS into a consumer or add per-consumer padding/radius/font overrides; improve the reusable predetermined template here if a real rendering issue is found.
+
+2026-11-18 status: that consumer integration already exists in SexBJCam desktop
+0.10.35 and later. It uses the frontend renderer/template with a separate detail
+row and retains its own native queue/window. The neutral reference exports that
+composition for other projects; no consuming project is edited by this bundle.
 
 ## Checkpoints
 

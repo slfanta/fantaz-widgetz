@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ftzml version="1">
+  <palette surface="#171b2a" text="#e7eef9" muted="#b9c5d9" accent="#ad94ff" success="#83e6ae" failure="#f1a7b3" warning="#e6c36a" border="#665691" divider="#38364a"/>
+  <pad id="notice" opacity="9">
+    <row id="heading">
+      <icon id="app-icon" glyph="app" label="Your downloader"/>
+      <text id="outcome" color="#83e6ae" overflow="clip">Download saved</text>
+      <button id="close" action="dismiss" label="Dismiss notification" text="[x]" textSize="11" color="#b9c5d9"/>
+    </row>
+    <divider id="separator"/>
+    <row id="body">
+      <led id="outcome-led" state="on" color="#83e6ae" label="Download saved"/>
+      <text id="message" role="secondary" overflow="roll">example-video.mp4</text>
+    </row>
+    <row id="detail-row">
+      <text id="detail" role="secondary" overflow="roll">Saved and validated</text>
+    </row>
+    <progress id="lifetime" value="1" color="#83e6ae" label="Notification display time remaining"/>
+  </pad>
+</ftzml>

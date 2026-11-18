@@ -1,5 +1,13 @@
 # Changelog
 
+## Reference revision — 2026-11-18 (API/runtime stays 0.1.0)
+
+- Added the neutral 360 × 88 result-pad agent reference: success/failure FTZML,
+  equivalent API composition, browser preview, host-only CSS and native contract.
+- Documented the separate detail row, opacity 9, restrained appearance, native
+  lifecycle/platform limits and difference from the unchanged 284 × 64 adapter.
+- Runtime/library/native code, dependency graph and released EXE are unchanged.
+
 ## 0.1.0 — 2026-11-17
 
 - Independent Fantaz Widgetz API with nine fixed visual types; regular system text, square 1 px frames, 4 px pad/gaps, 3 px rails and restrained LED.
