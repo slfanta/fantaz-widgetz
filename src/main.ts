@@ -3,7 +3,7 @@ import {invoke,isTauri} from '@tauri-apps/api/core';
 import '@fantaz/widgetz/style.css';import './host.css';
 const host=document.getElementById('app')!;const view=mount(host);let serial=0;let level:Opacity=10;let preview=false;let controlOn=true;
 function demoPad():Pad{return {type:'pad',id:'demo',children:[
- {type:'row',id:'brand',children:[{type:'icon',id:'brand-icon',source:{glyph:'app'}},{type:'text',id:'brand-label',content:'Fantaz Widgetz · 0.3.1',overflow:'clip'},{type:'button',id:'exit',action:'exit',text:'[x]',label:'Exit demo',textSize:11}]},
+ {type:'row',id:'brand',children:[{type:'icon',id:'brand-icon',source:{glyph:'app'}},{type:'text',id:'brand-label',content:'Fantaz Widgetz · 0.3.2',overflow:'clip'},{type:'button',id:'exit',action:'exit',text:'[x]',label:'Exit demo',textSize:11}]},
  {type:'divider',id:'divider'},
  {type:'text',id:'hint',role:'secondary',content:'Two rows. Fixed style. Your content.',wrap:true},
  {type:'row',id:'switch-example',children:[{type:'icon',id:'switch-icon',source:{glyph:'app'}},{type:'text',id:'switch-label',content:'On / off control',overflow:'clip'},{type:'switch',id:'sample-switch',action:'toggle-sample',label:'Example control enabled',state:controlOn?'on':'off',onColor:'#b54d29',offColor:'#42414a'}]},

@@ -1,6 +1,6 @@
 # Fantaz Widgetz on/off control
 
-Library and demo 0.3.1, 2026-11-20 (Asia/Taipei). This is a reusable
+Library and demo 0.3.2, 2026-11-20 (Asia/Taipei). This is a reusable
 Fantaz Widgetz control. It has no dependency on a downloader, routing app,
 website, server, registry setting or other project's state.
 
@@ -12,9 +12,10 @@ consumer or add extra theme knobs.
 ## Appearance contract
 
 The flat switch uses a rounded SVG rectangle and a true circle. The default
-track is 16 × 8 CSS pixels with a 6 px circle. The artwork is centered inside
+track is 20.8 × 10.4 CSS pixels with a 7.8 px circle. The artwork is centered inside
 the 34 × 20 desktop button. Off places the circle on the left and On places it
-on the right. The keyboard focus ring outlines the button.
+on the right. Keyboard focus changes the circle fill. The button has no border
+or focus outline.
 
 There are only two control-specific appearance properties:
 
@@ -61,16 +62,15 @@ Pads, rows and columns establish that containing block. The host must allow room
 and avoid overlapping or clipping positioned widgets. Removing geometry restores
 normal layout and clears the previous width/height/offsets.
 
-CSS pixels are logical units. At 100% page zoom, a 16 × 8 CSS pixel SVG covers
-about 24 × 12 physical pixels when Windows display scaling is set to 150%.
-The WebView applies display scaling. The design stores the same CSS dimensions
-across monitors.
+CSS pixels are logical units. At 100% page zoom, the default SVG covers about
+31 × 16 physical pixels when Windows display scaling is set to 150%. WebView2
+applies Windows display scaling automatically. Keep the library geometry in CSS
+pixels so future macOS and Android WebView hosts can use their own scaling.
 
 An explicit switch size sets the button box and its SVG viewport. The viewport
 uses 32/34 of the specified width and 16/20 of the height. The SVG fits that
 viewport proportionally so the circle stays round. A specified 34 × 20 box draws
-32 × 16 artwork, twice the new default and the same size as that box drew in
-0.3.0. Coarse pointers expand the button to at least 44 × 44 CSS pixels while
+32 × 16 artwork. Coarse pointers expand the button to at least 44 × 44 CSS pixels while
 the SVG keeps its selected dimensions.
 
 Icon artwork uses `iconSize: 16 | 20`, separately from inherited bounding-box
@@ -128,7 +128,7 @@ inherited `position`. Omit them for the recommended normal layout/default size.
         onColor="#b54d29" offColor="#42414a"/>
 ```
 
-An explicitly positioned 2× example is:
+This positioned example draws 32 × 16 artwork.
 
 ```xml
 <switch id="feature" state="on" action="toggle-feature" label="Feature enabled"

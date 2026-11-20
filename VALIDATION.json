@@ -1,11 +1,11 @@
 ﻿{
-    "version":  "0.3.1",
+    "version":  "0.3.2",
     "date":  "2026-11-20",
     "timezone":  "Asia/Taipei",
     "passed":  true,
     "project":  "Fantaz Widgetz",
-    "previousCheckpoint":  "f7d3e34",
-    "previousValidation":  "docs/validation/before-0.3.1.json",
+    "previousCheckpoint":  "67014ec",
+    "previousValidation":  "docs/validation/before-0.3.2.json",
     "controlGuide":  "docs/ON_OFF_CONTROL.md",
     "interactiveReference":  "docs/on-off-control/preview.html",
     "control":  {
@@ -31,12 +31,12 @@
                                                 20
                                             ],
                     "defaultArtworkPixels":  [
-                                                 16,
-                                                 8
+                                                 20.8,
+                                                 10.4
                                              ],
                     "circlePixels":  [
-                                         6,
-                                         6
+                                         7.8,
+                                         7.8
                                      ],
                     "palette":  "RGB565 (5 red / 6 green / 5 blue bits)",
                     "circle":  "Active base color +66 RGB channels, clamp and quantize",
@@ -52,7 +52,9 @@
                                                      44
                                                  ],
                     "artwork":  "Antialiased SVG rounded rectangle and circle",
-                    "proportionalScaling":  true
+                    "proportionalScaling":  true,
+                    "units":  "CSS pixels",
+                    "focusIndicator":  "The circle changes fill. The button has no border or outline."
                 },
     "sharedGeometry":  {
                            "allTypesInherit":  true,
@@ -68,7 +70,7 @@
                          "passed":  26,
                          "browser":  "Microsoft Edge via Playwright",
                          "command":  "npm test",
-                         "scope":  "Both state colors, track-only hover, SVG shapes and dimensions, proportional sizing, touch target, controls, FTZML, notifications and reference preview."
+                         "scope":  "Both state colors, track-only hover, borderless keyboard focus, SVG geometry, proportional sizing, touch target, FTZML, notifications and reference preview."
                      },
     "rustTests":  {
                       "passed":  6,
@@ -78,10 +80,16 @@
     "clippy":  "passed cargo clippy --workspace --all-targets --locked -- -D warnings",
     "frontend":  "Strict TypeScript, package declaration/JS/CSS/guide build, Vite production build; docs reference included in strict checking",
     "native":  {
-                   "version":  "0.3.1",
+                   "version":  "0.3.2",
                    "native":  true,
                    "flatSwitchMouseKeyboard":  true,
-                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795169836576",
+                   "switchGeometry":  {
+                                          "width":  20.80000114440918,
+                                          "height":  10.40000057220459,
+                                          "devicePixelRatio":  1.25
+                                      },
+                   "switchBorderlessOnFocus":  true,
+                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795170219233",
                    "pad":  {
                                "title":  "Fantaz Widgetz notification",
                                "visible":  true,
@@ -116,13 +124,13 @@
                                  "newRuntimeVariants":  0,
                                  "tauriSourceSha256":  "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
                                  "toolchain":  "rustc 1.97.0 (2d8144b78 2026-07-07)\r\nbinary: rustc\r\ncommit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3\r\ncommit-date: 2026-07-07\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.97.0\r\nLLVM version: 22.1.6",
-                                 "lockSha256":  "0d41a5eea37aa408c6e80b2ac9a58a5bc230a6ddc0de8259b83113ab4f3cecab"
+                                 "lockSha256":  "f4e36f58d8092c5585adf156f10632e5ec7449bef45613856de05d3f53181267"
                              },
     "package":  {
-                    "path":  "releases/fantaz-widgetz-0.3.1.tgz",
-                    "bytes":  20714,
-                    "sha256":  "b66b2806fef6100a919becfdd3bd0f2c144c9f1be4a96a8f90958af30621c183",
-                    "unpackedBytes":  64813,
+                    "path":  "releases/fantaz-widgetz-0.3.2.tgz",
+                    "bytes":  20863,
+                    "sha256":  "5f68525bf3f55ce75150b61a0d7d27d7a8a7d3bb1d21a5357376fe64227a0c77",
+                    "unpackedBytes":  65177,
                     "guideIncluded":  true,
                     "everyPackedFileMatchesCurrentBuild":  true
                 },
@@ -135,7 +143,7 @@
                         "RGB565 applies to rendered solid fills; ancestor compositing, browser zoom, OS scaling and display output remain host concerns.",
                         "Mobile support is embedded content with a minimum 44px touch target; mobile OS overlays are not implemented."
                     ],
-    "binary":  "releases/fantaz-widgetz-demo-0.3.1.exe",
-    "binarySha256":  "80c3663c0a0d8ad6fd482f8270d91f5084946f3aedfcf38ed36cdcecbeb8d32a",
-    "checkpointTag":  "fantaz-widgetz-v0.3.1-vector-switch-20261120"
+    "binary":  "releases/fantaz-widgetz-demo-0.3.2.exe",
+    "binarySha256":  "158c499a85ad27a9e5466f9e05244bc4bb28c59bde7ec98fb47a78e10042dd26",
+    "checkpointTag":  "fantaz-widgetz-v0.3.2-borderless-switch-20261120"
 }

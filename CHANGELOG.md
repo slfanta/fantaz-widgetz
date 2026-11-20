@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - 2026-11-20
+
+- Increase the default switch artwork to 20.8 × 10.4 CSS pixels. WebView2 maps
+  the logical size to the active Windows display scale.
+- Remove the white focus rectangle. Keyboard focus changes the circle fill.
+
 ## 0.3.1 - 2026-11-20
 
 - Draw the switch with a rounded SVG track and a true circle. Default artwork is

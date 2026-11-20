@@ -36,6 +36,14 @@ try{
  await expect(main.locator('[data-ftz-id="brand-label"]')).toContainText(JSON.parse(readFileSync('package.json','utf8')).version);
  const toggle=main.getByRole('switch',{name:'Example control enabled'});await expect(toggle).toHaveAttribute('aria-checked','true');
  await toggle.click();await expect(toggle).toHaveAttribute('aria-checked','false');await toggle.focus();await main.keyboard.press('Space');await expect(toggle).toHaveAttribute('aria-checked','true');
+ await expect(toggle).toHaveCSS('border-top-width', '0px');
+ await expect(toggle).toHaveCSS('outline-style', 'none');
+ const switchGeometry = await toggle.locator('svg').evaluate(svg => {
+  const {width, height} = svg.getBoundingClientRect();
+  return {width, height, devicePixelRatio: window.devicePixelRatio};
+ });
+ expect(switchGeometry.width).toBeCloseTo(20.8, 1);
+ expect(switchGeometry.height).toBeCloseTo(10.4, 1);
  await main.screenshot({path:'.runtime/native-flat-switch.png'});
  const result=(id,outcome)=>({id,outcome,title:'example-file-'+id+'.mp4',detail:outcome==='success'?'Saved to Downloads':'Connection timed out; host retains parts',appName:'Neutral fixture'});
  const accepted=await invoke('demo_result',{result:result('first','success')});expect(accepted).toBe('queued');expect(await invoke('demo_result',{result:result('first','success')})).toBe('duplicate');
@@ -57,7 +65,7 @@ try{
  await expect.poll(()=>native().find(w=>w.title==='Fantaz Widgetz notification')?.visible).toBe(false);
  expect((await ni('current'))).toBeNull();
  let denied=false;try{await invoke('plugin:fantaz-widgetz|current');}catch{denied=true;}expect(denied).toBe(true);
- const report={version:JSON.parse(readFileSync('package.json','utf8')).version,native:true,flatSwitchMouseKeyboard:true,isolatedProfile:profile,pad:firstNative,successAndFailureDisplayed:true,stableDedup:true,fifoAndStaleIdProtection:true,hoverHoldPreservesRemaining:true,closeButtonHandlerWorks:true,autoDismissAfterAck:true,mainCannotUseNoticeCommands:true,oneReusedNoticeWindow:true,productionTestHooksAbsent:true,noDownloaderModified:true};
+ const report={version:JSON.parse(readFileSync('package.json','utf8')).version,native:true,flatSwitchMouseKeyboard:true,switchGeometry,switchBorderlessOnFocus:true,isolatedProfile:profile,pad:firstNative,successAndFailureDisplayed:true,stableDedup:true,fifoAndStaleIdProtection:true,hoverHoldPreservesRemaining:true,closeButtonHandlerWorks:true,autoDismissAfterAck:true,mainCannotUseNoticeCommands:true,oneReusedNoticeWindow:true,productionTestHooksAbsent:true,noDownloaderModified:true};
  await invoke('exit_demo').catch(error=>{if(!/closed/.test(String(error)))throw error;});
  const exit=await Promise.race([exited,sleep(5000).then(()=>{throw Error('Demo did not exit cleanly');})]);expect(exit.code).toBe(0);report.gracefulExit=true;
  writeFileSync('.runtime/native-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));

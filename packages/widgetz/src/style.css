@@ -13,9 +13,28 @@
 
 /* Flat vector switch with centered artwork and a separate click target. */
 .fw-icon[data-size="20"]{width:20px;height:20px;flex-basis:20px}.fw-icon[data-size="20"]>img,.fw-icon[data-size="20"]>svg{width:20px;height:20px}
-.fw-switch{appearance:none;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:34px;height:20px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:default;outline-offset:0}
-.fw-switch-rail{display:block;flex:none;pointer-events:none}
+.fw-switch {
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  width:34px;
+  height:20px;
+  padding:0;
+  border:0;
+  outline:none;
+  background:transparent;
+  box-shadow:none;
+}
+.fw-switch-rail {
+  display:block;
+  flex:none;
+  width:20.8px;
+  height:10.4px;
+  pointer-events:none;
+}
 .fw-switch-track{fill:var(--fw-switch-track)}.fw-switch-thumb{fill:var(--fw-switch-circle)}
 .fw-switch:hover:not(:disabled) .fw-switch-track{fill:var(--fw-switch-hover)}
-.fw-switch:focus-visible{outline:1px solid var(--fw-text)}
+.fw-switch:focus-visible .fw-switch-thumb{fill:var(--fw-switch-focus)}
 @media(pointer:coarse){.fw-switch{min-width:44px;min-height:44px}}

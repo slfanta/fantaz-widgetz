@@ -29,13 +29,17 @@ export function paintSwitch(el: HTMLElement, spec: Switch) {
   const on = spec.state === 'on';
   const trackColor = rgb565(channels(on ? (spec.onColor ?? '#b54d29') : (spec.offColor ?? '#42414a')));
   const base = channels(trackColor);
+  const thumbColor = rgb565(base.map(value => value + 66));
+  const thumb = channels(thumbColor);
+  const focusOffset = thumb.every(value => value >= 215) ? -45 : 45;
   el.style.setProperty('--fw-switch-track', trackColor);
   el.style.setProperty('--fw-switch-hover', rgb565(base.map(value => value * .78)));
-  el.style.setProperty('--fw-switch-circle', rgb565(base.map(value => value + 66)));
+  el.style.setProperty('--fw-switch-circle', thumbColor);
+  el.style.setProperty('--fw-switch-focus', rgb565(thumb.map(value => value + focusOffset)));
 
-  // Preserve the artwork scale of explicitly sized designs from 0.3.0.
+  // Explicit sizes use the shared CSS-pixel geometry. Default artwork comes from CSS.
   const svg = el.querySelector('svg')!;
-  svg.setAttribute('width', String(spec.size ? spec.size.width * 32 / 34 : 16));
-  svg.setAttribute('height', String(spec.size ? spec.size.height * 16 / 20 : 8));
+  svg.style.width = spec.size ? `${spec.size.width * 32 / 34}px` : '';
+  svg.style.height = spec.size ? `${spec.size.height * 16 / 20}px` : '';
   el.querySelector('circle')!.setAttribute('cx', on ? '24' : '8');
 }

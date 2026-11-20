@@ -39,7 +39,7 @@ Validation rejects malformed XML, DTD/custom entities, processing instructions o
 
 Examples are in `public/templates/`: `download-result.ftzml`, `connection-monitor.ftzml`, `linear-animation.ftzml`. Sharing these files does not grant file/network permissions or modify any host project. Keep v1 constrained; do not add silent CSS/HTML fallbacks for unsupported options.
 
-Library 0.3.1 draws the flat two-color switch as an SVG.
+Library 0.3.2 draws the flat two-color switch as an SVG.
 
 ```xml
 <switch id="feature" state="off" action="toggle-feature" label="Feature enabled"
@@ -49,7 +49,7 @@ Library 0.3.1 draws the flat two-color switch as an SVG.
 The shared widget `size`/`position` map to width/height/x/y attributes on all
 elements. Supply width and height together, and x and y together, as integer
 pixels. Explicit switch dimensions size the button and SVG viewport. The SVG
-keeps its proportions. Omit geometry for normal layout and a centered 16x8 SVG
+keeps its proportions. Omit geometry for normal layout and a centered 20.8x10.4 CSS-pixel SVG
 in the 34x20 desktop button.
 
 State/action/accessible label are required. Disabled is operational; onColor and

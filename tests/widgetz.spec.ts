@@ -30,7 +30,7 @@ test('unknown style/font/padding/HTML hooks are rejected atomically',async({page
  for(const extra of [{padding:12},{font:'Arial'},{className:'free'},{style:{color:'red'}},{html:'<script>bad</script>'}]){
   const error=await api(page,({extra}:any)=>{try{(window as any).fantazTest.view.update({type:'pad',id:'root',children:[],...extra});return '';}catch(e){return String(e);}},{extra});expect(error).toContain('unsupported');
  }
- await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.3.1');
+ await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.3.2');
 });
 test('text uses literal content and unsafe images/colors are rejected',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.setText('brand-label','<img src=x onerror=alert(1)>');const errors=[];for(const n of [{type:'icon',id:'icon',source:{image:'https://example.com/photo.png'}},{type:'text',id:'text',content:'ok',color:'url(evil)'},{type:'icon',id:'icon',source:{image:'data:image/svg+xml,<svg/>'}}]){try{f.view.update({type:'pad',id:'root',children:[n]});}catch(e){errors.push(String(e));}}return {errors,images:document.querySelectorAll('img').length};});expect(result.errors).toHaveLength(3);expect(result.images).toBe(0);await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('<img src=x onerror=alert(1)>');
@@ -86,7 +86,14 @@ test('switch is controlled accessible keyboard-operable and disabled-safe',async
  await page.evaluate(()=>{const f=(window as any).fantazTest;(window as any).switchActions=[];f.view.onAction((id:string)=>(window as any).switchActions.push(id));f.view.update({type:'pad',id:'pad',children:[{type:'switch',id:'switch',state:'off',action:'route',label:'Routing'}]});});
  const toggle=page.getByRole('switch',{name:'Routing'});await expect(toggle).toHaveAttribute('aria-checked','false');await toggle.click();
  expect(await page.evaluate(()=>(window as any).switchActions)).toEqual(['route']);await expect(toggle).toHaveAttribute('aria-checked','false');
- await toggle.focus();await page.keyboard.press('Space');await page.keyboard.press('Enter');expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
+ const thumb = toggle.locator('circle');
+ const restingFill = await thumb.evaluate(el => getComputedStyle(el).fill);
+ await page.keyboard.press('Tab');
+ await page.keyboard.press('Shift+Tab');
+ await expect(toggle).toBeFocused();
+ await expect(toggle).toHaveCSS('outline-style', 'none');
+ await expect(thumb).not.toHaveCSS('fill', restingFill);
+ await page.keyboard.press('Space');await page.keyboard.press('Enter');expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;const node=document.querySelector('.fw-switch');const d=f.view.design();d.pad.children[0].state='on';d.pad.children[0].disabled=true;f.view.update(d.pad);return {same:node===document.querySelector('.fw-switch'),geometry:getComputedStyle(document.querySelector('.fw-switch')!).width,animations:document.getAnimations().length};});
  expect(result).toEqual({same:true,geometry:'34px',animations:0});await expect(toggle).toHaveAttribute('aria-checked','true');await expect(toggle).toBeDisabled();
  await page.evaluate(()=>{document.querySelector<HTMLButtonElement>('.fw-switch')!.click();});expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
@@ -101,7 +108,10 @@ test('switch FTZML rejects invalid state injected attributes and invalid fields 
 
 test('switch gets a 44px touch target without changing compact rail',async({browser})=>{
  const context=await browser.newContext({viewport:{width:180,height:60},hasTouch:true,isMobile:true});const page=await context.newPage();await page.goto('/');await page.evaluate(()=>{(window as any).fantazTest.view.update({type:'pad',id:'p',children:[{type:'switch',id:'s',action:'toggle',state:'off',label:'Routing'}]});});
- const size=await page.getByRole('switch').evaluate(el=>({height:el.getBoundingClientRect().height,rail:el.querySelector('.fw-switch-rail')!.getBoundingClientRect().height}));expect(size).toEqual({height:44,rail:8});await context.close();
+ const size=await page.getByRole('switch').evaluate(el=>({height:el.getBoundingClientRect().height,rail:el.querySelector('.fw-switch-rail')!.getBoundingClientRect().height}));
+ expect(size.height).toBe(44);
+ expect(size.rail).toBeCloseTo(10.4, 1);
+ await context.close();
 });
 
 test('compact SVG switch derives its RGB565 circle and darkens only the track',async({page})=>{
@@ -122,7 +132,11 @@ test('compact SVG switch derives its RGB565 circle and darkens only the track',a
   const thumb = button.querySelector('svg circle')!.getBoundingClientRect();
   return {target:[target.width,target.height], track:[track.width,track.height], thumb:[thumb.width,thumb.height]};
  });
- expect(dimensions).toEqual({target:[34,20],track:[16,8],thumb:[6,6]});
+ expect(dimensions.target).toEqual([34,20]);
+ expect(dimensions.track[0]).toBeCloseTo(20.8, 1);
+ expect(dimensions.track[1]).toBeCloseTo(10.4, 1);
+ expect(dimensions.thumb[0]).toBeCloseTo(7.8, 1);
+ expect(dimensions.thumb[1]).toBeCloseTo(7.8, 1);
  await page.screenshot({path:'.runtime/flat-switch-off-hover.png'});
 });
 
@@ -159,6 +173,6 @@ test('standalone control reference uses the public library and keeps default and
  const toggle=page.getByRole('switch',{name:'Feature enabled'});await expect(toggle).toHaveAttribute('aria-checked','true');await toggle.click();await expect(toggle).toHaveAttribute('aria-checked','false');
  await expect(page.getByRole('switch',{name:'On example'})).toHaveAttribute('aria-checked','true');
  await expect(page.getByRole('switch',{name:'Off example'})).toHaveAttribute('aria-checked','false');
- await expect(page.getByRole('switch',{name:'Double-size control'})).toBeVisible();
+ await expect(page.getByRole('switch',{name:'Larger control'})).toBeVisible();
  await page.mouse.move(600,400);await page.screenshot({path:'.runtime/flat-switch-reference.png'});
 });

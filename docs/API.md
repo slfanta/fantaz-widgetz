@@ -1,4 +1,4 @@
-# Public API 0.3.1
+# Public API 0.3.2
 
 The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-purpose framework. It can be consumed as a small TypeScript library plus optional Rust/Tauri adapter. Style consistency takes priority over freedom.
 
@@ -66,8 +66,8 @@ The renderer emits action strings; it does not download, browse, open files, del
 Read [ON_OFF_CONTROL.md](ON_OFF_CONTROL.md) for the complete agent contract,
 API/FTZML examples, shared geometry, exact color rules, accessibility and migration.
 
-The default switch centers a smooth 16x8 SVG in a 34x20 desktop button.
-Its track is a rounded rectangle and its circle is 6 px in diameter. Its only control-specific appearance fields are `onColor`
+The default switch centers a smooth 20.8x10.4 CSS-pixel SVG in a 34x20 desktop button.
+Its track is a rounded rectangle and its circle is 7.8 CSS px in diameter. Its only control-specific appearance fields are `onColor`
 and `offColor`. The circle automatically brightens the active color; hover darkens
 only the track. All fills are RGB565. No bevel/shadow/gradient, separate circle
 color, local opacity, animation or style hooks exist. State/action/label/disabled
