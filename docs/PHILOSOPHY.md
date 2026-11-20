@@ -6,7 +6,7 @@ High stylistic freedom causes inconsistency and display mistakes. Fantaz Widgetz
 
 Square pads and buttons; 1 px frame; 4 px pad and gap. No padding/margin/radius/weight/family API. Normal text 12 px, secondary 11 px, system font only. Button labels alone allow 11–14 px. LED 6 px with a faint fixed glow; icons 16 px; divider 1 px; progress 3 px. Prefer two rows and rolling text to new branding rows or blank space. Default dark blue/purple balance follows the reference floating monitor, with neutral branding. Success/failure has quiet color AND literal state text.
 
-Colors, opacity and bounded linear movement are intentional limited exceptions. No generic style object, CSS classes, raw HTML, arbitrary vector markup or stylesheet hook. Use one outer pad; nested pads are forbidden to avoid accumulated frames/spacing. Bound models to 64 elements/eight layout levels. Compose nine types; forms, tables, menus, rich text, navigation and business logic belong to the host.
+Colors, opacity and bounded linear movement are intentional limited exceptions. No generic style object, CSS classes, raw HTML, arbitrary vector markup or stylesheet hook. Use one outer pad; nested pads are forbidden to avoid accumulated frames/spacing. Bound models to 64 elements/eight layout levels. Compose ten types; forms, tables, menus, rich text, navigation and business logic belong to the host.
 
 ## Animation/accessibility
 

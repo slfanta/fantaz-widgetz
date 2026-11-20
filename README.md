@@ -24,7 +24,7 @@ Node 22+, Rust stable and the normal [Tauri prerequisites](https://v2.tauri.app/
 
 ## Small by design
 
-Nine elements: **pad, row, column, text, icon, LED, divider, progress, button**. A fixed system font, 4 px pad/gap, square 1 px frames, 3 px progress rails, 6 px round LED, 16 px icons and fixed controls. Text wraps or rolls, aligns start/center/end, and accepts a color. Buttons have fixed geometry and may carry text, a bundled vector glyph or local image; only label size (11–14 px), color, wrapping and alignment are adjustable. No `style`, `className`, raw HTML, remote images or font hooks.
+Ten elements: **pad, row, column, text, icon, LED, divider, progress, button, switch**. A fixed system font, 4 px pad/gap, square 1 px frames, 3 px progress rails, 6 px round LED, 16 px icons and fixed controls. Text wraps or rolls, aligns start/center/end, and accepts a color. Buttons have fixed geometry and may carry text, a bundled vector glyph or local image; only label size (11–14 px), color, wrapping and alignment are adjustable. No `style`, `className`, raw HTML, remote images or font hooks.
 
 Opacity is an integer **1–10**: **1 = 0%**, **10 = 100%**, equal steps `(level - 1) / 9`. Parent opacity composites all descendants; child opacity multiplies it. Use one level on the pad unless deliberately attenuating a child.
 

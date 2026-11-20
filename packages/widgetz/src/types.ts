@@ -11,12 +11,13 @@ export interface Pad extends Base {type:'pad'; children:Element[]; palette?:Part
 export interface Row extends Base {type:'row'; children:Element[]}
 export interface Column extends Base {type:'column'; children:Element[]}
 export interface Text extends Base {type:'text'; content:string; color?:Color; role?:'normal'|'secondary'; align?:Align; wrap?:boolean; overflow?:'clip'|'roll'}
-export interface Icon extends Base {type:'icon'; source:IconSource; color?:Color; label?:string}
+export interface Icon extends Base {type:'icon'; source:IconSource; color?:Color; label?:string; size?:16|20}
 export interface Led extends Base {type:'led'; state:'on'|'off'; color?:Color; label:string}
 export interface Divider extends Base {type:'divider'}
 export interface Progress extends Base {type:'progress'; value:number; color?:Color; label:string}
 export interface Button extends Base {type:'button'; action:string; label:string; text?:string; icon?:IconSource; color?:Color; textSize?:11|12|13|14; wrap?:boolean; align?:Align; disabled?:boolean}
-export type Element = Row|Column|Text|Icon|Led|Divider|Progress|Button;
+export interface Switch extends Base {type:'switch'; action:string; label:string; state:'on'|'off'; disabled?:boolean; color?:Color}
+export type Element = Row|Column|Text|Icon|Led|Divider|Progress|Button|Switch;
 export type Node = Pad|Element;
 export type Motion = {id:string; property:'x'; from:number; to:number; durationMs:number; repeat?:boolean}|{id:string; property:'opacity'; from:Opacity; to:Opacity; durationMs:number; repeat?:boolean}|{id:string; property:'color'; from:Color; to:Color; durationMs:number; repeat?:boolean};
 export interface Design {version:1; pad:Pad; animations?:Motion[]}

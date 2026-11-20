@@ -7,8 +7,8 @@ It exports the larger 360x88, opacity-9 composition as FTZML/API examples. The
 built-in 0.1.0 adapter remains 284x64; do not invent native sizing API or override
 element CSS. Reference-only revisions keep runtime/package versions and EXEs.
 
-- Nine types only: pad, row, column, text, icon, LED, divider, progress, button. Prefer composition. No arbitrary HTML/CSS/font/spacing/rounded-corner escape hatches.
-- Fixed regular system text: 12 px normal, 11 px secondary. Only button labels allow 11–14 px. Pads/gaps 4 px, divider 1 px, progress 3 px, icon 16 px, LED 6 px. Square pads/buttons; circular LEDs are intentional.
+- Ten types only: pad, row, column, text, icon, LED, divider, progress, button, switch. Prefer composition. No arbitrary HTML/CSS/font/spacing/rounded-corner escape hatches.
+- Fixed regular system text: 12 px normal, 11 px secondary. Only button labels allow 11–14 px. Pads/gaps 4 px, divider 1 px, progress 3 px, icon 16 px (optional fixed 20 px preset), LED 6 px. Switch is a fixed 34x20 pixel control (32x16 rail), 44px touch target. Square pads/buttons; circular LEDs are intentional.
 - Opacity integer 1–10 maps `(n-1)/9`, parent compositing multiplies descendants. Validated solid hex colors only.
 - Simple linear animation for text x, opacity and color only. One animation per property; clean replacement/cancel. No spring/shake/blink/layout animation. Reduced motion disables automatic motion, preserving full text via manual reading/accessibility.
 - Renderer projects state and emits action IDs. No download/file/network business operations in templates. textContent only, no innerHTML. Icons are bundled glyphs/local assets, never remote URL/raw SVG markup.

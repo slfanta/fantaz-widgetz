@@ -57,3 +57,23 @@ view.destroy();                    // observers, listeners and animations dispos
 Rolling uses Web Animations at fixed 24 px/second with a 24 px gap and only runs on real overflow. The complete text remains the accessible label/tooltip. Reduced-motion preference cancels automatic animation and permits manual horizontal/keyboard reading. Parent opacity is native CSS compositing, not an inherited numeric overwrite; a child level 10 cannot undo its parent's attenuation.
 
 The renderer emits action strings; it does not download, browse, open files, delete records or run callbacks named in a template. The host owns all effects. Runtime validation rejects unsupported properties before changing the displayed design, with 64-element/eight-level limits.
+
+## Library 0.2.0: pixel slide switch
+
+`switch` is a fixed compact control: a 34x20 desktop target, 32x16 square
+pixel rail and 12x12 stepped thumb. The fixed default palette uses 16-bit-era
+RGB565 colors. It has no gradient, rounded-pill skin, layout animation, or size
+escape hatch. A coarse pointer increases the target to 44x44, leaving the rail
+unchanged. Optional `color` sets the On accent; default is #63dfbd.
+
+Model: `{type:'switch',id:'routing',state:'on',action:'toggle-routing',label:'Routing',disabled:false}`.
+FTZML: `<switch id="routing" state="on" action="toggle-routing" label="Routing"/>`.
+State is `on` or `off`; action/accessible label are required; disabled/color/
+opacity are optional. Native button keyboard behavior plus role=switch and
+aria-checked expose state. It emits an action ID without changing state; the
+host updates it after its operation succeeds. Disabled prevents actions.
+`saveFTZML` and `parseFTZML` preserve the control atomically and reject unknown
+fields/invalid states. It is not available in the older 0.1.0 library.
+
+Icons additionally accept `size:16|20` / FTZML `size="20"` as a constrained
+compact/large preset; default 16 and button icon geometry remain unchanged.

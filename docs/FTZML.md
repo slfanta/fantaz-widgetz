@@ -21,7 +21,7 @@
 </ftzml>
 ```
 
-One optional `<palette>` alongside the single outer `<pad>` accepts the nine [API palette keys](API.md). Palette attributes apply to that pad. Nine element names match the API; structural elements contain children, `<text>` contains only literal text and all other elements are empty. Icon sources flatten to `glyph="download"` or `image="./app.png"`. Button icon sources use the same attributes. Numbers and booleans are explicit (`true`/`false`); opacity must be an integer 1–10. Button `textSize` is the only label-size option. `disabled` is supported.
+One optional `<palette>` alongside the single outer `<pad>` accepts the nine [API palette keys](API.md). Palette attributes apply to that pad. Ten element names match the API; structural elements contain children, `<text>` contains only literal text and all other elements are empty. Icon sources flatten to `glyph="download"` or `image="./app.png"`. Button icon sources use the same attributes. Numbers and booleans are explicit (`true`/`false`); opacity must be an integer 1–10. Button `textSize` is the only label-size option. `disabled` is supported.
 
 Optional sibling animation elements:
 
@@ -38,3 +38,14 @@ Each target must exist. One animation per target/property, at most 16. All anima
 Validation rejects malformed XML, DTD/custom entities, processing instructions other than a leading XML 1.0 UTF-8 declaration, namespaces, unknown tags/attributes, duplicate IDs, duplicate motion properties, nested pads, out-of-range values and models over 64 nodes/eight levels. File size limit is 256 KiB. Built-in XML entities and escaped literal text are allowed. Parse first; replace the visible view only after validation succeeds.
 
 Examples are in `public/templates/`: `download-result.ftzml`, `connection-monitor.ftzml`, `linear-animation.ftzml`. Sharing these files does not grant file/network permissions or modify any host project. Keep v1 constrained; do not add silent CSS/HTML fallbacks for unsupported options.
+
+Library 0.2.0 adds a serializable pixel slide control:
+
+```xml
+<switch id="routing" state="off" action="toggle-routing" label="Enable routing" disabled="false" color="#63dfbd"/>
+```
+
+It is empty-element syntax, state on/off; action, label required; opacity, color
+and disabled optional. The host owns state/action effects. Icon size="20" is
+also supported (only 16 or 20; omitted remains 16). Existing FTZML version 1
+files remain compatible. 0.1.0 parsers reject the new fields/types explicitly.

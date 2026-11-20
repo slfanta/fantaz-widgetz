@@ -1,6 +1,6 @@
 import type {Design,Motion,Node,Pad,Palette} from './types.js';
 const common=['id','type','opacity'];
-const fields:Record<string,string[]>={pad:['children','palette'],row:['children'],column:['children'],text:['content','color','role','align','wrap','overflow'],icon:['source','color','label'],led:['state','color','label'],divider:[],progress:['value','color','label'],button:['action','label','text','icon','color','textSize','wrap','align','disabled']};
+const fields:Record<string,string[]>={pad:['children','palette'],row:['children'],column:['children'],text:['content','color','role','align','wrap','overflow'],icon:['source','color','label','size'],led:['state','color','label'],divider:[],progress:['value','color','label'],button:['action','label','text','icon','color','textSize','wrap','align','disabled'],switch:['action','label','state','disabled','color']};
 const paletteKeys: (keyof Palette)[]=['surface','text','muted','accent','success','failure','warning','border','divider'];
 export function fail(message:string):never {throw new Error(`Fantaz Widgetz: ${message}`);}
 function object(v:unknown,label:string):Record<string,unknown>{if(!v||typeof v!=='object'||Array.isArray(v))fail(`${label} must be an object`);return v as Record<string,unknown>;}
@@ -31,9 +31,10 @@ export function validatePad(value:unknown):asserts value is Pad {
   switch(t){
    case 'pad':if(n.palette!==undefined){const p=object(n.palette,'palette');keys(p,paletteKeys,'palette');Object.values(p).forEach(color);}break;
    case 'text':text(n.content,'text content');if(n.role!==undefined)choice(n.role,['normal','secondary'],'text role');if(n.overflow!==undefined)choice(n.overflow,['clip','roll'],'overflow');if(n.wrap===true&&n.overflow==='roll')fail('text cannot wrap AND roll');break;
-   case 'icon':source(n.source);if(n.label!==undefined)text(n.label,'icon label',256);break;
+   case 'icon':if(n.size!==undefined)choice(n.size,[16,20],'icon size');source(n.source);if(n.label!==undefined)text(n.label,'icon label',256);break;
    case 'led':choice(n.state,['on','off'],'LED state');text(n.label,'LED label',256);break;
    case 'progress':if(typeof n.value!=='number'||!Number.isFinite(n.value)||n.value<0||n.value>1)fail('progress value must be 0–1');text(n.label,'progress label',256);break;
+   case 'switch':text(n.action,'switch action',64);text(n.label,'switch accessible label',256);choice(n.state,['on','off'],'switch state');break;
    case 'button':text(n.action,'button action',64);text(n.label,'button accessible label',256);if(n.text!==undefined)text(n.text,'button text',256);if(n.icon!==undefined)source(n.icon);if(n.text===undefined&&n.icon===undefined)fail('button needs text or icon');if(n.textSize!==undefined)choice(n.textSize,[11,12,13,14],'button textSize');break;
   }
  }

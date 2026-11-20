@@ -1,5 +1,17 @@
 # Changelog
 
+## Library 0.2.0 - 2026-11-20
+
+- Added a controlled pixel/RGB565-style on/off switch with fixed compact geometry,
+  keyboard/accessibility state, disabled protection and inert action IDs.
+- FTZML version 1 now saves/loads switch state, action, label, color and disabled.
+- Added a fixed 20px icon preset, keeping the default 16px/notification styles.
+- Library-only release: native adapter/demo binary and Tauri dependencies are
+  unchanged at 0.1.0. Existing 0.1.0 design files remain compatible.
+- Library and demo frontend builds plus 22 browser tests passed; no new native
+  behavior is claimed. No reference downloader was changed.
+
+
 ## Reference revision — 2026-11-18 (API/runtime stays 0.1.0)
 
 - Added the neutral 360 × 88 result-pad agent reference: success/failure FTZML,

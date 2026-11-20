@@ -75,3 +75,31 @@ test('mobile in-app controls use touch targets and fixed template keeps its boun
  const context=await browser.newContext({viewport:{width:320,height:88},isMobile:true,hasTouch:true,reducedMotion:'reduce'});const page=await context.newPage();await page.goto('/');await page.locator('[data-action="failure"]').click();
  expect(await page.evaluate(()=>document.body.scrollWidth)).toBe(320);expect(await page.locator('[data-ftz-id="close"]').evaluate(e=>e.getBoundingClientRect().height)).toBe(44);await page.screenshot({path:'.runtime/failure-touch-320x88.png'});await context.close();
 });
+
+
+test('pixel switch round-trips on/off actions colors disabled and large icon through FTZML',async({page})=>{
+ const r=await page.evaluate(()=>{const f=(window as any).fantazTest;const design={version:1,pad:{type:'pad',id:'pad',children:[{type:'row',id:'row',children:[{type:'icon',id:'icon',source:{glyph:'app'},size:20},{type:'switch',id:'switch',state:'on',action:'route',label:'Routing',color:'#63dfbd',disabled:true}]}]}};return {design,xml:f.saveFTZML(design),roundtrip:f.parseFTZML(f.saveFTZML(design))};});
+ expect(r.roundtrip).toEqual(r.design);expect(r.xml).toContain('<switch');expect(r.xml).toContain('size="20"');
+});
+
+test('pixel switch is controlled accessible keyboard-operable and disabled-safe',async({page})=>{
+ await page.evaluate(()=>{const f=(window as any).fantazTest;(window as any).switchActions=[];f.view.onAction((id:string)=>(window as any).switchActions.push(id));f.view.update({type:'pad',id:'pad',children:[{type:'switch',id:'switch',state:'off',action:'route',label:'Routing'}]});});
+ const toggle=page.getByRole('switch',{name:'Routing'});await expect(toggle).toHaveAttribute('aria-checked','false');await toggle.click();
+ expect(await page.evaluate(()=>(window as any).switchActions)).toEqual(['route']);await expect(toggle).toHaveAttribute('aria-checked','false');
+ await toggle.focus();await page.keyboard.press('Space');await page.keyboard.press('Enter');expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
+ const result=await page.evaluate(()=>{const f=(window as any).fantazTest;const node=document.querySelector('.fw-switch');const d=f.view.design();d.pad.children[0].state='on';d.pad.children[0].disabled=true;f.view.update(d.pad);return {same:node===document.querySelector('.fw-switch'),geometry:getComputedStyle(document.querySelector('.fw-switch')!).width,animations:document.getAnimations().length};});
+ expect(result).toEqual({same:true,geometry:'34px',animations:0});await expect(toggle).toHaveAttribute('aria-checked','true');await expect(toggle).toBeDisabled();
+ await page.evaluate(()=>{document.querySelector<HTMLButtonElement>('.fw-switch')!.click();});expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
+});
+
+test('pixel switch FTZML rejects invalid state injected attributes and arbitrary sizes atomically',async({page})=>{
+ for(const body of ['<switch id="s" state="maybe" action="x" label="X"/>','<switch id="s" state="on" action="x" label="X" onclick="evil"/>','<icon id="i" glyph="app" size="19"/>','<switch id="s" state="off" action="x" label="X" disabled="yes"/>']){
+  const error=await page.evaluate(body=>{try{(window as any).fantazTest.view.load((window as any).fantazTest.parseFTZML('<ftzml version="1"><pad id="p">'+body+'</pad></ftzml>'));return '';}catch(e){return String(e);}},body);expect(error).toContain('Fantaz Widgetz');
+ }
+ await expect(page.locator('[data-ftz-id="brand-label"]')).toContainText('Fantaz Widgetz');
+});
+
+test('pixel switch gets a 44px touch target without changing compact rail',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:180,height:60},hasTouch:true,isMobile:true});const page=await context.newPage();await page.goto('/');await page.evaluate(()=>{(window as any).fantazTest.view.update({type:'pad',id:'p',children:[{type:'switch',id:'s',action:'toggle',state:'off',label:'Routing'}]});});
+ const size=await page.getByRole('switch').evaluate(el=>({height:el.getBoundingClientRect().height,rail:el.querySelector('.fw-switch-rail')!.getBoundingClientRect().height}));expect(size).toEqual({height:44,rail:16});await context.close();
+});

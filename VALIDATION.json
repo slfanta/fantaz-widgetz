@@ -211,5 +211,23 @@
     "apiChanged": false,
     "builtInAdapterSizeChanged": false,
     "releasedDemoBinaryChanged": false
+  },
+  "library020": {
+    "date": "2026-11-20",
+    "version": "0.2.0",
+    "scope": "TypeScript library only; native demo/adapter and binary unchanged at 0.1.0",
+    "passed": true,
+    "browserTests": 22,
+    "builds": [
+      "build:library",
+      "build"
+    ],
+    "newChecks": [
+      "switch on/off FTZML roundtrip",
+      "controlled click keyboard disabled and node preservation",
+      "invalid state/fields/icon size atomic rejection",
+      "44px touch target with unchanged pixel rail"
+    ],
+    "nativeRebuilt": false
   }
 }
