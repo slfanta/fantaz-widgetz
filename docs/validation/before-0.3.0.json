@@ -1,0 +1,233 @@
+{
+  "version": "0.1.0",
+  "date": "2026-11-17",
+  "passed": true,
+  "rustTests": {
+    "passed": 6,
+    "command": "cargo test --workspace --locked",
+    "scope": "platform-independent result FIFO/dedup/backpressure, exact delivery/hold/expiry and corner geometry"
+  },
+  "browserTests": {
+    "passed": 18,
+    "browser": "Microsoft Edge via Playwright",
+    "command": "npm test",
+    "scope": "fixed geometry/two-row pad, unchanged DOM/ticker phase, reduced motion/manual reading, opacity, action/destroy, strict unsupported fields, literal text/local icon/color validation, FTZML examples/escaping/semantic roundtrip/bad XML and preserved animation declarations, touch targets"
+  },
+  "clippy": "passed: cargo clippy --workspace --all-targets --locked -- -D warnings",
+  "frontend": "TypeScript strict check, Vite production build and standalone declaration/JS/CSS package build passed",
+  "native": {
+    "version": "0.1.0",
+    "native": true,
+    "isolatedProfile": "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1794885089907",
+    "pad": {
+      "title": "Fantaz Widgetz notification",
+      "visible": true,
+      "noActivate": true,
+      "toolWindow": true,
+      "appWindow": false,
+      "topmost": true,
+      "rect": [
+        1192,
+        788,
+        284,
+        64
+      ],
+      "foreground": false
+    },
+    "successAndFailureDisplayed": true,
+    "stableDedup": true,
+    "fifoAndStaleIdProtection": true,
+    "hoverHoldPreservesRemaining": true,
+    "closeButtonHandlerWorks": true,
+    "autoDismissAfterAck": true,
+    "mainCannotUseNoticeCommands": true,
+    "oneReusedNoticeWindow": true,
+    "productionTestHooksAbsent": true,
+    "noDownloaderModified": true,
+    "gracefulExit": true
+  },
+  "staticNativePrebuild": {
+    "passed": true,
+    "tauriVersion": "2.12.6",
+    "unchangedRuntimeArchives": 7,
+    "newRuntimeVariants": 0,
+    "tauriSourceSha256": "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
+    "toolchain": "rustc 1.97.0 (2d8144b78 2026-07-07)\r\nbinary: rustc\r\ncommit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3\r\ncommit-date: 2026-07-07\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.97.0\r\nLLVM version: 22.1.6",
+    "lockSha256": "f61310e7da6048bbfc39cd3b1ed4dab9f210f904cf2fb5b5c265c7bfc3098645"
+  },
+  "package": {
+    "path": "releases/fantaz-widgetz-0.1.0.tgz",
+    "bytes": 15456,
+    "sha256": "bb4ec58ef89ecfd35a8d4a955a56e1bf929cd62b125ef135485761e79d8ff893",
+    "unpackedBytes": 49482
+  },
+  "referenceProjectsModified": false,
+  "limitations": [
+    "Native corner windows exercised on Windows only; Linux/macOS runtime and Wayland compositor behavior not certified.",
+    "Mobile support is embedded content, not mobile OS overlays/notifications. Coarse-pointer controls require the fixed taller 88 px two-row footprint.",
+    "Tauri Rust runtime archives are statically linked and compiler/target/feature/profile specific; system WebView runtime remains required.",
+    "Notification queue is bounded in memory and not download history; producer handles full-queue errors and delivery diagnostics.",
+    "FTZML v1 has parse/save APIs and examples; no visual editor or arbitrary CSS/HTML/font hooks."
+  ],
+  "binary": "releases/fantaz-widgetz-demo-0.1.0.exe",
+  "binarySha256": "224181dc8c9bc636867454409563e83afc06de12c808b9ab090350b09611b551",
+  "checkpointTag": "fantaz-widgetz-v0.1.0-compact-pads-ftzml-20261117",
+  "notificationPadReference20261118": {
+    "date": "2026-11-18",
+    "timezone": "Asia/Taipei",
+    "kind": "reference/documentation revision; library/native/runtime version unchanged at 0.1.0",
+    "guide": "docs/notification-pad-reference/README.md",
+    "designs": [
+      "docs/notification-pad-reference/success.ftzml",
+      "docs/notification-pad-reference/failure.ftzml"
+    ],
+    "verification": {
+      "date": "2026-11-18",
+      "scope": "Reference assets only; runtime 0.1.0 unchanged",
+      "cases": [
+        {
+          "outcome": "success",
+          "roundTripEqual": true,
+          "pad": {
+            "width": 360,
+            "height": 88,
+            "padding": "4px",
+            "border": "1px",
+            "radius": "0px",
+            "opacity": 0.888889,
+            "weight": "400"
+          },
+          "boxes": [
+            {
+              "type": "fw-row",
+              "id": "heading",
+              "x": 5,
+              "y": 6,
+              "width": 350,
+              "height": 20
+            },
+            {
+              "type": "fw-divider",
+              "id": "separator",
+              "x": 5,
+              "y": 30,
+              "width": 350,
+              "height": 1
+            },
+            {
+              "type": "fw-row",
+              "id": "body",
+              "x": 5,
+              "y": 35,
+              "width": 350,
+              "height": 18
+            },
+            {
+              "type": "fw-row",
+              "id": "detail-row",
+              "x": 5,
+              "y": 57,
+              "width": 350,
+              "height": 18
+            },
+            {
+              "type": "fw-progress",
+              "id": "lifetime",
+              "x": 5,
+              "y": 79,
+              "width": 350,
+              "height": 3
+            }
+          ],
+          "overflow": false,
+          "apiMatchesFTZML": true
+        },
+        {
+          "outcome": "failure",
+          "roundTripEqual": true,
+          "pad": {
+            "width": 360,
+            "height": 88,
+            "padding": "4px",
+            "border": "1px",
+            "radius": "0px",
+            "opacity": 0.888889,
+            "weight": "400"
+          },
+          "boxes": [
+            {
+              "type": "fw-row",
+              "id": "heading",
+              "x": 5,
+              "y": 6,
+              "width": 350,
+              "height": 20
+            },
+            {
+              "type": "fw-divider",
+              "id": "separator",
+              "x": 5,
+              "y": 30,
+              "width": 350,
+              "height": 1
+            },
+            {
+              "type": "fw-row",
+              "id": "body",
+              "x": 5,
+              "y": 35,
+              "width": 350,
+              "height": 18
+            },
+            {
+              "type": "fw-row",
+              "id": "detail-row",
+              "x": 5,
+              "y": 57,
+              "width": 350,
+              "height": 18
+            },
+            {
+              "type": "fw-progress",
+              "id": "lifetime",
+              "x": 5,
+              "y": 79,
+              "width": 350,
+              "height": 3
+            }
+          ],
+          "overflow": false,
+          "apiMatchesFTZML": true
+        }
+      ],
+      "longRowsRollIndependently": true,
+      "reducedMotionAndTeardown": true
+    },
+    "typescript": "passed strict standalone typecheck for create-result-pad.ts and preview.ts",
+    "visualReview": "Both neutral rendered references inspected at 360x88; exact fixed frame/spacing and no clipping.",
+    "nativeRebuilt": false,
+    "nativeChecksRepeated": false,
+    "consumerProjectsModified": false,
+    "apiChanged": false,
+    "builtInAdapterSizeChanged": false,
+    "releasedDemoBinaryChanged": false
+  },
+  "library020": {
+    "date": "2026-11-20",
+    "version": "0.2.0",
+    "scope": "TypeScript library only; native demo/adapter and binary unchanged at 0.1.0",
+    "passed": true,
+    "browserTests": 22,
+    "builds": [
+      "build:library",
+      "build"
+    ],
+    "newChecks": [
+      "switch on/off FTZML roundtrip",
+      "controlled click keyboard disabled and node preservation",
+      "invalid state/fields/icon size atomic rejection",
+      "44px touch target with unchanged pixel rail"
+    ],
+    "nativeRebuilt": false
+  }
+}

@@ -9,6 +9,13 @@ guide. This adds reference assets; the 284 × 64 demo/adapter defaults stay inta
 
 The reference is the compact two-row floating monitor: regular text, a small app icon, restrained LED, faint divider and almost console-like density. This is an independent project; it does not modify or depend on the reference downloader.
 
+## Reusable on/off control
+
+For the flat two-color switch and its agent integration contract, read
+[ON_OFF_CONTROL.md](docs/ON_OFF_CONTROL.md). It includes API/FTZML examples,
+RGB565 brightness/hover rules, shared inherited size/position and an interactive
+reference. The control belongs to Fantaz Widgetz and has no app-specific logic.
+
 ## Run
 
 ```sh
@@ -41,7 +48,7 @@ view.onAction(action => { if (action === 'dismiss') view.destroy(); });
 
 The project-neutral notification template uses two rows. Its desktop host is **284 × 64 logical px**, bottom-right inside the work area, topmost, no taskbar button, no focus stealing, no OS toast. Close `[x]` or timeout dismisses it. Hover/focus holds the timeout. Success lasts 8 seconds; failure 12. One visible pad, bounded FIFO queue, delivery acknowledgment and no idle polling.
 
-FTZML is the XML save/share format: `parseFTZML(xml)` / `saveFTZML(design)`. It contains only this limited vocabulary, palette and simple animations. Three `.ftzml` examples ship in `public/templates/`; no visual editor is included.
+FTZML is the XML save/share format: `parseFTZML(xml)` / `saveFTZML(design)`. It contains only this limited vocabulary, palette and simple animations. Four `.ftzml` examples ship in `public/templates/`; no visual editor is included.
 
 | Location | Responsibility |
 |---|---|

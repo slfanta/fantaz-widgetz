@@ -1,0 +1,32 @@
+{
+  "version": "0.3.0",
+  "native": true,
+  "flatSwitchMouseKeyboard": true,
+  "isolatedProfile": "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795168613150",
+  "pad": {
+    "title": "Fantaz Widgetz notification",
+    "visible": true,
+    "noActivate": true,
+    "toolWindow": true,
+    "appWindow": false,
+    "topmost": true,
+    "rect": [
+      1624,
+      1004,
+      284,
+      64
+    ],
+    "foreground": false
+  },
+  "successAndFailureDisplayed": true,
+  "stableDedup": true,
+  "fifoAndStaleIdProtection": true,
+  "hoverHoldPreservesRemaining": true,
+  "closeButtonHandlerWorks": true,
+  "autoDismissAfterAck": true,
+  "mainCannotUseNoticeCommands": true,
+  "oneReusedNoticeWindow": true,
+  "productionTestHooksAbsent": true,
+  "noDownloaderModified": true,
+  "gracefulExit": true
+}

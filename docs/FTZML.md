@@ -39,13 +39,21 @@ Validation rejects malformed XML, DTD/custom entities, processing instructions o
 
 Examples are in `public/templates/`: `download-result.ftzml`, `connection-monitor.ftzml`, `linear-animation.ftzml`. Sharing these files does not grant file/network permissions or modify any host project. Keep v1 constrained; do not add silent CSS/HTML fallbacks for unsupported options.
 
-Library 0.2.0 adds a serializable pixel slide control:
+Library 0.3.0 uses a flat two-color on/off control:
 
 ```xml
-<switch id="routing" state="off" action="toggle-routing" label="Enable routing" disabled="false" color="#63dfbd"/>
+<switch id="feature" state="off" action="toggle-feature" label="Feature enabled"
+        onColor="#b54d29" offColor="#42414a"/>
 ```
 
-It is empty-element syntax, state on/off; action, label required; opacity, color
-and disabled optional. The host owns state/action effects. Icon size="20" is
-also supported (only 16 or 20; omitted remains 16). Existing FTZML version 1
-files remain compatible. 0.1.0 parsers reject the new fields/types explicitly.
+The shared widget `size`/`position` map to width/height/x/y attributes on all
+elements. Supply width and height together, and x and y together, as integer
+pixels. Switch resizing preserves the default 34x20 box at whole-number 1x-4x
+scale. Omit geometry for normal layout and recommended default dimensions.
+
+State/action/accessible label are required. Disabled is operational; onColor and
+offColor are the only switch-specific appearance fields. Circle and hover fills
+are derived automatically in RGB565. Switch-local color/opacity/other styling is
+rejected. Icon artwork size is now `iconSize="20"` (16 or 20), keeping inherited
+width/height separate. See [the reusable control guide](ON_OFF_CONTROL.md) for
+examples, migration and the exact rendering/agent contract.

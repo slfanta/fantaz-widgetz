@@ -1,7 +1,8 @@
 /** FTZML v1: deliberately tiny XML, exactly the public model, no executable data. */
 import type {Design,Motion,Node,Pad,Palette} from './types.js';
 import {fail,validateDesign} from './validate.js';
-const attrs:Record<string,string[]>={pad:['id','opacity'],row:['id','opacity'],column:['id','opacity'],text:['id','opacity','color','role','align','wrap','overflow'],icon:['id','opacity','color','label','glyph','image','size'],led:['id','opacity','color','label','state'],divider:['id','opacity'],progress:['id','opacity','color','label','value'],button:['id','opacity','color','label','action','text','glyph','image','textSize','wrap','align','disabled'],switch:['id','opacity','color','label','action','state','disabled']};
+const attrs:Record<string,string[]>={pad:['id','opacity'],row:['id','opacity'],column:['id','opacity'],text:['id','opacity','color','role','align','wrap','overflow'],icon:['id','opacity','color','label','glyph','image','iconSize'],led:['id','opacity','color','label','state'],divider:['id','opacity'],progress:['id','opacity','color','label','value'],button:['id','opacity','color','label','action','text','glyph','image','textSize','wrap','align','disabled'],switch:['id','label','action','state','disabled','onColor','offColor']};
+const geometryAttrs=['x','y','width','height'];
 const paletteKeys=['surface','text','muted','accent','success','failure','warning','border','divider'];
 function attributes(el:globalThis.Element,allowed:string[]){const v:Record<string,string>={};for(const a of [...el.attributes]){if(!allowed.includes(a.name))fail(`FTZML <${el.tagName}>: unsupported attribute '${a.name}'`);v[a.name]=a.value;}return v;}
 function noContent(el:globalThis.Element){if(el.children.length||el.textContent?.trim())fail(`FTZML <${el.tagName}> must be empty`);}
@@ -19,7 +20,7 @@ export function parseFTZML(xml:string):Design {
  let pad:Pad|undefined;let palette:Partial<Palette>|undefined;const animations:Motion[]=[];
  function element(el:globalThis.Element,depth:number):Node {
   if(depth>8)fail('FTZML exceeds 8 layout levels');const type=el.tagName;if(!Object.hasOwn(attrs,type))fail(`FTZML unknown element <${type}>`);
-  const a=attributes(el,attrs[type]);const n:Record<string,unknown>={type,...a};
+  const a=attributes(el,[...attrs[type],...geometryAttrs]);const n:Record<string,unknown>={type,...a};
   if(a.opacity!==undefined)n.opacity=number(a.opacity,'opacity');
   if(type==='pad'||type==='row'||type==='column'){
    for(const child of [...el.childNodes])if(child.nodeType===3&&child.textContent?.trim())fail(`FTZML <${type}> accepts elements only`);
@@ -28,7 +29,10 @@ export function parseFTZML(xml:string):Design {
    if(el.children.length)fail('FTZML text cannot contain markup');n.content=el.textContent||'';
   }else noContent(el);
   if(a.wrap!==undefined)n.wrap=bool(a.wrap,'wrap');if(a.disabled!==undefined)n.disabled=bool(a.disabled,'disabled');if(a.textSize!==undefined)n.textSize=number(a.textSize,'textSize');
-  if(a.size!==undefined)n.size=number(a.size,'icon size');
+  if(a.iconSize!==undefined)n.iconSize=number(a.iconSize,'iconSize');
+  if(a.width!==undefined||a.height!==undefined){n.size={width:number(a.width||'','width'),height:number(a.height||'','height')};}
+  if(a.x!==undefined||a.y!==undefined){n.position={x:number(a.x||'','x'),y:number(a.y||'','y')};}
+  for(const key of geometryAttrs)delete n[key];
   if(a.value!==undefined)n.value=number(a.value,'progress value');
   if(type==='icon'||type==='button'){
    if(a.glyph!==undefined&&a.image!==undefined)fail('FTZML choose glyph OR image');
@@ -56,8 +60,9 @@ export function saveFTZML(design:Design):string {
  validateDesign(design);const lines=['<?xml version="1.0" encoding="UTF-8"?>','<ftzml version="1">'];
  if(design.pad.palette)lines.push('  <palette'+attr(design.pad.palette)+'/>');
  function write(n:Node,level:number){
-  const a:Record<string,unknown>={id:n.id,...(n.opacity===undefined?{}:{opacity:n.opacity})};
-  for(const [k,v]of Object.entries(n))if(!['id','type','opacity','palette','content','children','source','icon'].includes(k))a[k]=v;
+  const a:Record<string,unknown>={id:n.id,...(!('opacity'in n)||n.opacity===undefined?{}:{opacity:n.opacity})};
+  for(const [k,v]of Object.entries(n))if(!['id','type','opacity','palette','content','children','source','icon','size','position'].includes(k))a[k]=v;
+  if(n.size)Object.assign(a,n.size);if(n.position)Object.assign(a,n.position);
   const icon=n.type==='icon'?n.source:n.type==='button'?n.icon:undefined;if(icon)Object.assign(a,icon);
   const prefix='  '.repeat(level)+'<'+n.type+attr(a);
   if('children'in n){lines.push(prefix+'>');n.children.forEach(c=>write(c,level+1));lines.push('  '.repeat(level)+`</${n.type}>`);}

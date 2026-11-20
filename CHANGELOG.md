@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - 2026-11-20
+
+- Remade the on/off switch as a flat low-resolution RGB565 capsule with a stepped
+  brighter circle. Hover darkens only the track. No bevels, shadows or gradients.
+- Limited switch-specific appearance to onColor/offColor. Shared exported Widget
+  base owns integer-pixel size/position; switch resizing preserves integer scale.
+- State/action/label/disabled stay controlled and accessible. FTZML round-trips
+  shared geometry and both colors; unsupported extra styling fails atomically.
+- Added the project-neutral ON_OFF_CONTROL agent guide and interactive reference.
+- Breaking 0.2.0 migration: switch color becomes onColor, local opacity is removed,
+  and icon numeric size becomes iconSize to keep inherited size unambiguous.
+- Library/demo/native versions aligned. No consuming application was modified.
+
+
 ## Library 0.2.0 - 2026-11-20
 
 - Added a controlled pixel/RGB565-style on/off switch with fixed compact geometry,

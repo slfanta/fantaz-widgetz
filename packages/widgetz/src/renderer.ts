@@ -1,5 +1,6 @@
 import type {Design,IconSource,Motion,Node,Pad} from './types.js';
 import {color,fail,opacity,validateDesign,validateMotion,validatePad} from './validate.js';
+import {paintSwitch,switchGraphic} from './switch.js';
 
 // Trusted bundled vector vocabulary. Consumers never supply SVG markup.
 const paths={app:'M4 19V5h13M4 11h10M8 19v-8',download:'M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4',check:'M4 12l5 5L20 6',fail:'M6 6l12 12M18 6 6 18',close:'M7 7l10 10M17 7 7 17',info:'M12 10v7m0-11v1M4 4h16v16H4z'};
@@ -48,12 +49,17 @@ export function mount(target:HTMLElement):WidgetView {
   if(spec.type==='progress'){const fill=document.createElement('div');fill.className='fw-progress-fill';el.append(fill);el.setAttribute('role','progressbar');el.setAttribute('aria-valuemin','0');el.setAttribute('aria-valuemax','100');}
   if(spec.type==='divider')el.setAttribute('role','separator');
   if(spec.type==='button'||spec.type==='switch')(el as HTMLButtonElement).type='button';
-  if(spec.type==='switch'){const rail=document.createElement('span');rail.className='fw-switch-rail';rail.setAttribute('aria-hidden','true');const thumb=document.createElement('span');thumb.className='fw-switch-thumb';rail.append(thumb);el.append(rail);}
+  if(spec.type==='switch')el.append(switchGraphic());
   return r;
  }
  function patch(r:RecordNode,s:Node,fresh:boolean){
   const old=r.spec;
-  if(fresh||old.opacity!==s.opacity){stopMotion(s.id+':opacity');r.el.style.opacity=s.opacity===undefined?'':String(opacity(s.opacity));}
+  r.el.style.width=s.size?`${s.size.width}px`:'';r.el.style.height=s.size?`${s.size.height}px`:'';
+  r.el.style.flex=s.size?'0 0 auto':'';
+  r.el.style.minHeight=s.size&&s.type!=='switch'?'0px':'';
+  r.el.style.position=s.position?'absolute':'';r.el.style.left=s.position?`${s.position.x}px`:'';r.el.style.top=s.position?`${s.position.y}px`:'';
+  const nextOpacity='opacity'in s?s.opacity:undefined,oldOpacity='opacity'in old?old.opacity:undefined;
+  if(fresh||oldOpacity!==nextOpacity){stopMotion(s.id+':opacity');r.el.style.opacity=nextOpacity===undefined?'':String(opacity(nextOpacity));}
   const newColor='color'in s?s.color:undefined;const oldColor='color'in old?old.color:undefined;
   if(fresh||newColor!==oldColor){stopMotion(s.id+':color');r.el.style.color=newColor||'';}
   if(s.type==='pad')for(const [k,v]of Object.entries({...{surface:'#171b2a',text:'#e7eef9',muted:'#b9c5d9',accent:'#ad94ff',success:'#83e6ae',failure:'#f1a7b3',warning:'#e6c36a',border:'#665691',divider:'#38364a'},...s.palette}))r.el.style.setProperty('--fw-'+k,v);
@@ -65,10 +71,10 @@ export function mount(target:HTMLElement):WidgetView {
     // Focusable overflowing fields retain manual reading when motion is off.
     r.el.tabIndex=s.overflow==='roll'?0:-1;break;
    }
-   case 'icon':r.el.dataset.size=String(s.size||16);if(fresh||old.type!=='icon'||JSON.stringify(old.source)!==JSON.stringify(s.source))r.el.replaceChildren(...icon(s.source).childNodes);if(s.label){r.el.removeAttribute('aria-hidden');r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);}else{r.el.removeAttribute('role');r.el.removeAttribute('aria-label');r.el.setAttribute('aria-hidden','true');}break;
+   case 'icon':r.el.dataset.size=String(s.iconSize||16);if(fresh||old.type!=='icon'||JSON.stringify(old.source)!==JSON.stringify(s.source))r.el.replaceChildren(...icon(s.source).childNodes);if(s.label){r.el.removeAttribute('aria-hidden');r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);}else{r.el.removeAttribute('role');r.el.removeAttribute('aria-label');r.el.setAttribute('aria-hidden','true');}break;
    case 'led':r.el.dataset.state=s.state;r.el.setAttribute('role','img');r.el.setAttribute('aria-label',s.label);break;
    case 'progress':r.el.firstElementChild!.setAttribute('style',`transform:scaleX(${s.value})`);r.el.setAttribute('aria-valuenow',String(Math.round(s.value*100)));r.el.setAttribute('aria-label',s.label);break;
-   case 'switch':{r.el.dataset.action=s.action;r.el.dataset.state=s.state;r.el.setAttribute('role','switch');r.el.setAttribute('aria-checked',String(s.state==='on'));r.el.setAttribute('aria-label',s.label);r.el.title=s.label;(r.el as HTMLButtonElement).disabled=!!s.disabled;break;}
+   case 'switch':{r.el.dataset.action=s.action;r.el.dataset.state=s.state;r.el.setAttribute('role','switch');r.el.setAttribute('aria-checked',String(s.state==='on'));r.el.setAttribute('aria-label',s.label);r.el.title=s.label;(r.el as HTMLButtonElement).disabled=!!s.disabled;paintSwitch(r.el,s);break;}
    case 'button':{
     r.el.dataset.action=s.action;r.el.dataset.wrap=String(!!s.wrap);r.el.dataset.align=s.align||'center';r.el.setAttribute('aria-label',s.label);r.el.title=s.label;(r.el as HTMLButtonElement).disabled=!!s.disabled;
     if(fresh||old.type!=='button'||old.text!==s.text||JSON.stringify(old.icon)!==JSON.stringify(s.icon)){
