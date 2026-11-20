@@ -148,7 +148,13 @@
                        "version":  "0.3.2",
                        "validation":  "Installed the released package in an isolated host, type-checked the guide example, resolved guide links and verified mouse and keyboard toggling in Edge."
                    },
+    "agentRoles":  {
+                       "path":  "AGENTS.md",
+                       "defaultRole":  "Library user",
+                       "developerAuthorization":  "Explicit user authorization for the current task",
+                       "validation":  "Reviewed role instructions and cross-links. Verified released package and demo hashes."
+                   },
     "binary":  "releases/fantaz-widgetz-demo-0.3.2.exe",
     "binarySha256":  "158c499a85ad27a9e5466f9e05244bc4bb28c59bde7ec98fb47a78e10042dd26",
-    "checkpointTag":  "fantaz-widgetz-v0.3.2-agent-quick-start-20261120"
+    "checkpointTag":  "fantaz-widgetz-v0.3.2-agent-roles-20261120"
 }

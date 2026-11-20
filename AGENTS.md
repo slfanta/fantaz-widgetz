@@ -1,8 +1,15 @@
 # Fantaz Widgetz agent contract
 
-Read README.md and docs/{PHILOSOPHY,API,INTEGRATION}.md before changes. Work only in this independent project, never a reference downloader.
+## Agent roles
 
-For agents integrating the library into a host, start with [the quick start](docs/QUICK_START.md).
+- **Library user (default).** Treat this repository and installed or vendored copies of Widgetz as read-only. Use a released package, read its docs and source as needed, and make integration changes in the host project. Report library issues you find during integration.
+- **Widgetz developer (explicit opt-in).** Edit this repository only when the user explicitly assigns you the Fantaz Widgetz developer role for the current task or explicitly asks you to change this project. Stay within that scope. A host integration request or access to the checkout leaves the default role in effect.
+
+Library users can start with [the quick start](docs/QUICK_START.md).
+
+## Developer instructions
+
+Read README.md and docs/{PHILOSOPHY,API,INTEGRATION}.md before changes. Work only in this independent project, never a reference downloader.
 
 For cross-project result-pad work, read docs/notification-pad-reference/README.md.
 It exports the larger 360x88, opacity-9 composition as FTZML/API examples. The

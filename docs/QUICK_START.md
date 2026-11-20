@@ -1,5 +1,9 @@
 # Fantaz Widgetz quick start for agents
 
+Your default role is **library user**. Integrate the released package in the
+host project and treat Widgetz as read-only. Changes to Fantaz Widgetz itself
+require explicit user authorization for the task. [Agent roles](../AGENTS.md)
+
 Use `@fantaz/widgetz` to render a compact pad inside a browser or WebView. In the
 host project, install the local 0.3.2 package. Adjust the path for your checkout.
 

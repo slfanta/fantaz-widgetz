@@ -64,7 +64,7 @@ Windows specifics are confined to the adapter: show uses `SW_SHOWNOACTIVATE`, hi
 
 ## SexBJCam consumption and reusable reference
 
-This repository modifies **no SexBJCam source, extension, downloader or live task**. A consuming integration should replace only its notification presentation/adapter: keep its committed-success/final-failure source events, existing IDs, delivery acknowledgments and task/status boundaries. Supply its icon and palette through Fantaz's limited appearance fields. Preserve widget/main/tray behavior and downloader settings. Do not duplicate CSS into a consumer or add per-consumer padding/radius/font overrides; improve the reusable predetermined template here if a real rendering issue is found.
+This repository modifies **no SexBJCam source, extension, downloader or live task**. A consuming integration should replace only its notification presentation/adapter: keep its committed-success/final-failure source events, existing IDs, delivery acknowledgments and task/status boundaries. Supply its icon and palette through Fantaz's limited appearance fields. Preserve widget/main/tray behavior and downloader settings. Use the bundled styles and report any rendering issue that requires a Widgetz change. The user can authorize changes to the shared template under the developer role. [Agent roles](../AGENTS.md)
 
 2026-11-18 status: that consumer integration already exists in SexBJCam desktop
 0.10.35 and later. It uses the frontend renderer/template with a separate detail

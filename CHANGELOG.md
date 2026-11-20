@@ -3,6 +3,7 @@
 ## Guide revision - 2026-11-20
 
 - Add a short agent quick start for Widgetz 0.3.2 with a working switch example.
+- Make library use the default agent role and require explicit authorization to edit Widgetz.
 
 ## 0.3.2 - 2026-11-20
 
