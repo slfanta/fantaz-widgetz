@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - 2026-11-20
+
+- Add `enableWindowDrag` to the optional Tauri frontend entry point. It hands
+  movement to the OS once per mouse drag on a pad's body.
+- Document the per-window permission and cleanup. The native demo exercises
+  dragging from the pad body and clicking its controls.
+
 ## 0.4.0 - 2026-11-20
 
 - Add nine positioning anchors as an inherited `Widget` property and FTZML

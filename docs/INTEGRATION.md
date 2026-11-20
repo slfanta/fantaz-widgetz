@@ -12,6 +12,35 @@ Build the library (`npm run build:library`), then depend on `@fantaz/widgetz` fr
 
 The renderer works inside a mobile WebView/browser. On coarse pointers controls have a fixed 44 px minimum touch target, so the host must allow a taller pad (at least 88 logical px for the two-row notice); desktop notification dimensions must not be blindly reused for touch layouts. This is in-app content, not an Android/iOS system-wide overlay, background service or mobile OS toast. Native desktop corner adapter code is platform-gated.
 
+## Draggable Tauri pads
+
+In a host-owned Tauri 2 desktop window, bind the helper to the same element
+you pass to `mount`.
+
+```ts
+import { enableWindowDrag } from '@fantaz/widgetz/tauri';
+
+const stopDragging = enableWindowDrag(element);
+// On teardown, call stopDragging() and view.destroy().
+```
+
+Add this capability for the floating window, substituting its label for
+`floating-pad`.
+
+```json
+{"identifier":"floating-pad-drag","windows":["floating-pad"],"permissions":["core:window:allow-start-dragging"]}
+```
+
+Dragging the pad body with the primary mouse button hands movement over to the
+OS once the pointer travels three CSS pixels. Buttons, switches, and text that
+can take focus for manual scrolling keep their usual input behavior. Clicks,
+double-clicks and right-clicks keep their usual handlers. The host owns the
+window and can save its location using Tauri's window move events.
+
+Use the helper as the drag handler for its region. Remove any existing
+JavaScript position loop or `data-tauri-drag-region` attributes from that region.
+The helper is inert in a regular browser and has native validation on Windows.
+
 ## Tauri 2 desktop notification
 
 Rust host Cargo.toml:

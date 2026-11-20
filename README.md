@@ -3,6 +3,8 @@
 A tiny, style-predetermined widget vocabulary. Compact desktop pads and in-app widgets, with an optional **Tauri 2** corner-notification adapter. No UI component runtime, font choices, rounded panels, or application-specific branding.
 
 Install the library, mount a pad, and wire up actions with the [agent quick start](docs/QUICK_START.md).
+For a movable desktop pad, use `enableWindowDrag` from `@fantaz/widgetz/tauri`.
+See the [Tauri setup](docs/INTEGRATION.md#draggable-tauri-pads).
 
 For agents reusing the larger result pad from the downloader project, start with
 the [360 × 88 notification reference bundle](docs/notification-pad-reference/README.md):

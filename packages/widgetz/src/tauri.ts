@@ -4,6 +4,7 @@ import {listen} from '@tauri-apps/api/event';
 import {mount,type WidgetView} from './renderer.js';
 import {downloadNotice} from './templates.js';
 import type {DownloadResult,NoticeOptions} from './types.js';
+export { enableWindowDrag } from './window-drag.js';
 export interface NoticeFrame {notice:DownloadResult;shown:boolean;held:boolean;remainingMs:number;pending:number}
 export interface NoticeConnection {view:WidgetView;destroy():void}
 export async function connectNotifications(target:HTMLElement,options:NoticeOptions={}):Promise<NoticeConnection>{

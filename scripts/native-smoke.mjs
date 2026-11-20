@@ -45,6 +45,28 @@ try{
  expect(switchGeometry.width).toBeCloseTo(20.8, 1);
  expect(switchGeometry.height).toBeCloseTo(10.4, 1);
  await main.screenshot({path:'.runtime/native-flat-switch.png'});
+ const dragCommands=[];
+ const countDrag=request=>{
+  const url=new URL(request.url());
+  if(request.method()==='POST'&&url.hostname==='ipc.localhost'&&decodeURIComponent(url.pathname)==='/plugin:window|start_dragging')dragCommands.push(url.pathname);
+ };
+ main.on('request',countDrag);
+ const dragTarget=await main.locator('[data-ftz-id="hint"] .fw-run').boundingBox();
+ const {devicePixelRatio:dpr}=switchGeometry;
+ const coords=[Math.round((dragTarget.x+dragTarget.width/2)*dpr),Math.round((dragTarget.y+dragTarget.height/2)*dpr)];
+ const mouse=spawnSync('python',['scripts/native-window-drag.py',String(app.pid),...coords.map(String)],{encoding:'utf8',windowsHide:true,timeout:5000});
+ if(mouse.status!==0)throw Error(mouse.stderr||String(mouse.error));
+ const windowDrag=JSON.parse(mouse.stdout);
+ expect(windowDrag.belowThresholdPhysical).toEqual(windowDrag.startPhysical);
+ for(const [index,[x,y]] of windowDrag.samplesPhysical.entries()){
+  expect(Math.abs(x-windowDrag.startPhysical[0]-windowDrag.expectedDxPhysical[index])).toBeLessThanOrEqual(2);
+  expect(y).toBe(windowDrag.startPhysical[1]);
+ }
+ expect(windowDrag.finalPhysical).toEqual(windowDrag.samplesPhysical.at(-1));
+ await expect.poll(()=>dragCommands.length).toBe(1);
+ main.off('request',countDrag);
+ windowDrag.nativeStarts=dragCommands.length;
+ await expect(toggle).toHaveAttribute('aria-checked','true');
  const result=(id,outcome)=>({id,outcome,title:'example-file-'+id+'.mp4',detail:outcome==='success'?'Saved to Downloads':'Connection timed out; host retains parts',appName:'Neutral fixture'});
  const accepted=await invoke('demo_result',{result:result('first','success')});expect(accepted).toBe('queued');expect(await invoke('demo_result',{result:result('first','success')})).toBe('duplicate');
  let notice;await expect.poll(()=>{notice=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('notice.html'));return !!notice;}).toBe(true);
@@ -52,6 +74,8 @@ try{
  try{await expect.poll(()=>native().find(w=>w.title==='Fantaz Widgetz notification')?.visible).toBe(true);}catch(error){console.log('Native window diagnostics',JSON.stringify(native()));console.log('Current frame',await bounded(notice.evaluate(()=>window.__TAURI_INTERNALS__.invoke('plugin:fantaz-widgetz|current'))));throw error;}
  const firstNative=native().find(w=>w.title==='Fantaz Widgetz notification');expect(firstNative.noActivate).toBe(true);expect(firstNative.appWindow).toBe(false);expect(firstNative.topmost).toBe(true);expect(firstNative.foreground).toBe(false);
  expect(await notice.evaluate(()=>!!(window.fantazTest))).toBe(false);
+ const noticeDragDenied=await bounded(notice.evaluate(()=>window.__TAURI_INTERNALS__.invoke('plugin:window|start_dragging',{label:'fantaz-notice'}).then(()=>false,()=>true)));
+ expect(noticeDragDenied).toBe(true);
  await notice.screenshot({path:'.runtime/native-success.png'});
  await invoke('demo_result',{result:result('second','failure')});await invoke('demo_result',{result:result('third','success')});
  const ni=(name,args={})=>bounded(notice.evaluate(({name,args})=>window.__TAURI_INTERNALS__.invoke('plugin:fantaz-widgetz|'+name,args),{name,args}));
@@ -65,7 +89,7 @@ try{
  await expect.poll(()=>native().find(w=>w.title==='Fantaz Widgetz notification')?.visible).toBe(false);
  expect((await ni('current'))).toBeNull();
  let denied=false;try{await invoke('plugin:fantaz-widgetz|current');}catch{denied=true;}expect(denied).toBe(true);
- const report={version:JSON.parse(readFileSync('package.json','utf8')).version,native:true,flatSwitchMouseKeyboard:true,switchGeometry,switchBorderlessOnFocus:true,isolatedProfile:profile,pad:firstNative,successAndFailureDisplayed:true,stableDedup:true,fifoAndStaleIdProtection:true,hoverHoldPreservesRemaining:true,closeButtonHandlerWorks:true,autoDismissAfterAck:true,mainCannotUseNoticeCommands:true,oneReusedNoticeWindow:true,productionTestHooksAbsent:true,noDownloaderModified:true};
+ const report={version:JSON.parse(readFileSync('package.json','utf8')).version,native:true,windowDrag,noticeDragDenied,flatSwitchMouseKeyboard:true,switchGeometry,switchBorderlessOnFocus:true,isolatedProfile:profile,pad:firstNative,successAndFailureDisplayed:true,stableDedup:true,fifoAndStaleIdProtection:true,hoverHoldPreservesRemaining:true,closeButtonHandlerWorks:true,autoDismissAfterAck:true,mainCannotUseNoticeCommands:true,oneReusedNoticeWindow:true,productionTestHooksAbsent:true,noDownloaderModified:true};
  await invoke('exit_demo').catch(error=>{if(!/closed/.test(String(error)))throw error;});
  const exit=await Promise.race([exited,sleep(5000).then(()=>{throw Error('Demo did not exit cleanly');})]);expect(exit.code).toBe(0);report.gracefulExit=true;
  writeFileSync('.runtime/native-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));

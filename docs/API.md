@@ -1,4 +1,4 @@
-# Public API 0.4.0
+# Public API 0.5.0
 
 The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-purpose framework. It can be consumed as a small TypeScript library plus optional Rust/Tauri adapter. Style consistency takes priority over freedom.
 
@@ -77,6 +77,15 @@ view.destroy();                    // observers, listeners and animations dispos
 Rolling uses Web Animations at fixed 24 px/second with a 24 px gap and only runs on real overflow. The complete text remains the accessible label/tooltip. Reduced-motion preference cancels automatic animation and permits manual horizontal/keyboard reading. Parent opacity is native CSS compositing, not an inherited numeric overwrite; a child level 10 cannot undo its parent's attenuation.
 
 The renderer emits action strings; it does not download, browse, open files, delete records or run callbacks named in a template. The host owns all effects. Runtime validation rejects unsupported properties before changing the displayed design, with 64-element/eight-level limits.
+
+## Desktop window dragging
+
+`enableWindowDrag(padElement: HTMLElement): () => void` is an optional export
+of `@fantaz/widgetz/tauri`. Pass the pad's mount element to enable native mouse
+dragging and call the returned function to release pointer capture and remove
+listeners. Calling it again on the same element returns the existing cleanup
+function. See [Tauri setup](INTEGRATION.md#draggable-tauri-pads) for the capability
+and behavior.
 
 ## Flat on/off control
 
