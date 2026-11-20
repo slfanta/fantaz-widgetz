@@ -39,7 +39,7 @@ Validation rejects malformed XML, DTD/custom entities, processing instructions o
 
 Examples are in `public/templates/`: `download-result.ftzml`, `connection-monitor.ftzml`, `linear-animation.ftzml`. Sharing these files does not grant file/network permissions or modify any host project. Keep v1 constrained; do not add silent CSS/HTML fallbacks for unsupported options.
 
-Library 0.3.0 uses a flat two-color on/off control:
+Library 0.3.1 draws the flat two-color switch as an SVG.
 
 ```xml
 <switch id="feature" state="off" action="toggle-feature" label="Feature enabled"
@@ -48,8 +48,9 @@ Library 0.3.0 uses a flat two-color on/off control:
 
 The shared widget `size`/`position` map to width/height/x/y attributes on all
 elements. Supply width and height together, and x and y together, as integer
-pixels. Switch resizing preserves the default 34x20 box at whole-number 1x-4x
-scale. Omit geometry for normal layout and recommended default dimensions.
+pixels. Explicit switch dimensions size the button and SVG viewport. The SVG
+keeps its proportions. Omit geometry for normal layout and a centered 16x8 SVG
+in the 34x20 desktop button.
 
 State/action/accessible label are required. Disabled is operational; onColor and
 offColor are the only switch-specific appearance fields. Circle and hover fills

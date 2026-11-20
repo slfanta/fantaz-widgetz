@@ -1,6 +1,6 @@
 # Fantaz Widgetz on/off control
 
-Current contract: library/demo 0.3.0, 2026-11-20 (Asia/Taipei). This is a reusable
+Library and demo 0.3.1, 2026-11-20 (Asia/Taipei). This is a reusable
 Fantaz Widgetz control. It has no dependency on a downloader, routing app,
 website, server, registry setting or other project's state.
 
@@ -11,11 +11,10 @@ consumer or add extra theme knobs.
 
 ## Appearance contract
 
-The control is flat and deliberately low resolution. Its baseline button box is
-34 × 20 CSS pixels, containing a 32 × 16 stepped capsule and a 12 × 12 stepped
-circle inset two pixels. Off places the circle left; On places it right. There
-is no bevel, relief, gradient, shadow, outline around the rail, sliding animation
-or smooth rounded skin. The accessible keyboard focus ring is outside the control.
+The flat switch uses a rounded SVG rectangle and a true circle. The default
+track is 16 × 8 CSS pixels with a 6 px circle. The artwork is centered inside
+the 34 × 20 desktop button. Off places the circle on the left and On places it
+on the right. The keyboard focus ring outlines the button.
 
 There are only two control-specific appearance properties:
 
@@ -24,14 +23,11 @@ There are only two control-specific appearance properties:
 | `onColor` | Solid `#RRGGBB` track color when On | `#b54d29` |
 | `offColor` | Solid `#RRGGBB` track color when Off | `#42414a` |
 
-`size` and `position` are inherited from the shared `Widget` interface, which is
-the common widget base throughout Fantaz. They are not switch-specific fields.
-Keep the default size for the intended pixel-perfect appearance.
+`size` and `position` are inherited from the shared `Widget` interface.
 
-Every track, hover and circle fill is quantized to RGB565: 5 red, 6 green and 5
-blue bits, expanded for display. Convert each channel to the nearest available
-level. Preserve the supplied color in the model/FTZML so save/load is lossless;
-quantization belongs to rendering.
+The track, hover and circle use RGB565 solid fills with 5 red, 6 green and 5 blue
+bits expanded for display. The SVG renderer smooths the edges at the output
+resolution. FTZML preserves the supplied hex colors when saving.
 
 The circle always uses the active state's base color with a fixed +66 brightness
 increase on each RGB channel, clamped to 255 and quantized again. A channel already
@@ -65,11 +61,17 @@ Pads, rows and columns establish that containing block. The host must allow room
 and avoid overlapping or clipping positioned widgets. Removing geometry restores
 normal layout and clears the previous width/height/offsets.
 
-Switch dimensions additionally preserve the exact pixel grid and aspect ratio:
-34×20 (default), 68×40, 102×60 or 136×80. These are whole-pixel 1×–4× scales of
-the same artwork. Fractional scales, arbitrary widths or stretched circles are
-rejected. A coarse pointer supplies at least a 44×44 touch target without changing
-the selected artwork dimensions. The host must leave room for that target.
+CSS pixels are logical units. At 100% page zoom, a 16 × 8 CSS pixel SVG covers
+about 24 × 12 physical pixels when Windows display scaling is set to 150%.
+The WebView applies display scaling. The design stores the same CSS dimensions
+across monitors.
+
+An explicit switch size sets the button box and its SVG viewport. The viewport
+uses 32/34 of the specified width and 16/20 of the height. The SVG fits that
+viewport proportionally so the circle stays round. A specified 34 × 20 box draws
+32 × 16 artwork, twice the new default and the same size as that box drew in
+0.3.0. Coarse pointers expand the button to at least 44 × 44 CSS pixels while
+the SVG keeps its selected dimensions.
 
 Icon artwork uses `iconSize: 16 | 20`, separately from inherited bounding-box
 `size`. This avoids giving the common property different meanings on each type.
@@ -130,7 +132,7 @@ An explicitly positioned 2× example is:
 
 ```xml
 <switch id="feature" state="on" action="toggle-feature" label="Feature enabled"
-        width="68" height="40" x="80" y="8"
+        width="34" height="20" x="80" y="8"
         onColor="#b54d29" offColor="#42414a"/>
 ```
 
@@ -148,8 +150,8 @@ an intentional whole-composition opacity to its containing pad. Icon numeric
 one inherited width/height meaning. Unsupported legacy fields fail explicitly.
 
 Keep docs, exported types, runtime validation, FTZML and rendering in agreement.
-Verify both states, track-only hover, brightness/RGB565 fills, pixel geometry,
-integer scaling, shared position/size roundtrip/reset, click/keyboard/disabled,
+Verify both states, track-only hover, brightness/RGB565 fills, smooth SVG geometry,
+proportional scaling, shared position/size roundtrip/reset, click/keyboard/disabled,
 strict unknown-field rejection and unchanged-DOM behavior. Run package/frontend
 builds and the existing integration checks. Publish only a new version/checkpoint;
 preserve prior packages and EXEs. The native notification adapter remains separate

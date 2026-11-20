@@ -1,11 +1,11 @@
 ﻿{
-    "version":  "0.3.0",
+    "version":  "0.3.1",
     "date":  "2026-11-20",
     "timezone":  "Asia/Taipei",
     "passed":  true,
     "project":  "Fantaz Widgetz",
-    "previousCheckpoint":  "9abe658",
-    "previousValidation":  "docs/validation/before-0.3.0.json",
+    "previousCheckpoint":  "f7d3e34",
+    "previousValidation":  "docs/validation/before-0.3.1.json",
     "controlGuide":  "docs/ON_OFF_CONTROL.md",
     "interactiveReference":  "docs/on-off-control/preview.html",
     "control":  {
@@ -31,12 +31,12 @@
                                                 20
                                             ],
                     "defaultArtworkPixels":  [
-                                                 32,
-                                                 16
+                                                 16,
+                                                 8
                                              ],
                     "circlePixels":  [
-                                         12,
-                                         12
+                                         6,
+                                         6
                                      ],
                     "palette":  "RGB565 (5 red / 6 green / 5 blue bits)",
                     "circle":  "Active base color +66 RGB channels, clamp and quantize",
@@ -47,16 +47,12 @@
                     "localOpacityAndMotionRejected":  true,
                     "controlledActions":  true,
                     "keyboardAndDisabled":  true,
-                    "pixelScales":  [
-                                        1,
-                                        2,
-                                        3,
-                                        4
-                                    ],
                     "touchTargetMinimumPixels":  [
                                                      44,
                                                      44
-                                                 ]
+                                                 ],
+                    "artwork":  "Antialiased SVG rounded rectangle and circle",
+                    "proportionalScaling":  true
                 },
     "sharedGeometry":  {
                            "allTypesInherit":  true,
@@ -65,13 +61,14 @@
                            "omitted":  "Existing normal pad/row/column layout",
                            "removalRestoresFlow":  true,
                            "ftzml":  "width/height and x/y roundtrip to size/position",
-                           "iconArtworkPreset":  "iconSize: 16|20; separate from inherited size"
+                           "iconArtworkPreset":  "iconSize: 16|20; separate from inherited size",
+                           "explicitSwitchSize":  "Sets the button box and SVG viewport. Existing 0.3.0 dimensions render at their previous artwork scale."
                        },
     "browserTests":  {
                          "passed":  26,
                          "browser":  "Microsoft Edge via Playwright",
                          "command":  "npm test",
-                         "scope":  "Both states, RGB565 derived brightness, track-only hover, pixel sizes, touch target, inherited geometry/render/reset, controlled keyboard/click/disabled, FTZML strict roundtrip/unknown fields, existing notification/ticker/opacity/teardown and reusable reference"
+                         "scope":  "Both state colors, track-only hover, SVG shapes and dimensions, proportional sizing, touch target, controls, FTZML, notifications and reference preview."
                      },
     "rustTests":  {
                       "passed":  6,
@@ -81,10 +78,10 @@
     "clippy":  "passed cargo clippy --workspace --all-targets --locked -- -D warnings",
     "frontend":  "Strict TypeScript, package declaration/JS/CSS/guide build, Vite production build; docs reference included in strict checking",
     "native":  {
-                   "version":  "0.3.0",
+                   "version":  "0.3.1",
                    "native":  true,
                    "flatSwitchMouseKeyboard":  true,
-                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795168613150",
+                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795169836576",
                    "pad":  {
                                "title":  "Fantaz Widgetz notification",
                                "visible":  true,
@@ -93,8 +90,8 @@
                                "appWindow":  false,
                                "topmost":  true,
                                "rect":  [
-                                            1624,
-                                            1004,
+                                            1752,
+                                            1076,
                                             284,
                                             64
                                         ],
@@ -119,13 +116,13 @@
                                  "newRuntimeVariants":  0,
                                  "tauriSourceSha256":  "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
                                  "toolchain":  "rustc 1.97.0 (2d8144b78 2026-07-07)\r\nbinary: rustc\r\ncommit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3\r\ncommit-date: 2026-07-07\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.97.0\r\nLLVM version: 22.1.6",
-                                 "lockSha256":  "e8d117a458e8bac1ccedb5e28501be106248f7884f1d2ff394743c7b56053635"
+                                 "lockSha256":  "0d41a5eea37aa408c6e80b2ac9a58a5bc230a6ddc0de8259b83113ab4f3cecab"
                              },
     "package":  {
-                    "path":  "releases/fantaz-widgetz-0.3.0.tgz",
-                    "bytes":  20945,
-                    "sha256":  "64dadc9ed584ea4034d182822c418cca642b7f03684146a0aeeef0b6493943a6",
-                    "unpackedBytes":  65309,
+                    "path":  "releases/fantaz-widgetz-0.3.1.tgz",
+                    "bytes":  20714,
+                    "sha256":  "b66b2806fef6100a919becfdd3bd0f2c144c9f1be4a96a8f90958af30621c183",
+                    "unpackedBytes":  64813,
                     "guideIncluded":  true,
                     "everyPackedFileMatchesCurrentBuild":  true
                 },
@@ -134,12 +131,11 @@
     "limitations":  [
                         "Native runtime exercised on Windows only; Linux/macOS/Wayland not certified.",
                         "Positioned widgets are excluded from normal flow; the host must allocate space and prevent clipping/overlap.",
-                        "Switch resizing preserves whole-pixel uniform 1x-4x scaling; default size is recommended.",
                         "Breaking 0.2.0 migration: switch color becomes onColor/offColor, switch-local opacity removed, icon numeric size becomes iconSize.",
                         "RGB565 applies to rendered solid fills; ancestor compositing, browser zoom, OS scaling and display output remain host concerns.",
                         "Mobile support is embedded content with a minimum 44px touch target; mobile OS overlays are not implemented."
                     ],
-    "binary":  "releases/fantaz-widgetz-demo-0.3.0.exe",
-    "binarySha256":  "85d3f39945f54f23d5b7e596e03782b489e0ac1fa310b9902bb2a7347913654c",
-    "checkpointTag":  "fantaz-widgetz-v0.3.0-flat-on-off-control-20261120"
+    "binary":  "releases/fantaz-widgetz-demo-0.3.1.exe",
+    "binarySha256":  "80c3663c0a0d8ad6fd482f8270d91f5084946f3aedfcf38ed36cdcecbeb8d32a",
+    "checkpointTag":  "fantaz-widgetz-v0.3.1-vector-switch-20261120"
 }

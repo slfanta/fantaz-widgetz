@@ -38,7 +38,13 @@ export function validatePad(value:unknown):asserts value is Pad {
    case 'icon':if(n.iconSize!==undefined)choice(n.iconSize,[16,20],'iconSize');source(n.source);if(n.label!==undefined)text(n.label,'icon label',256);break;
    case 'led':choice(n.state,['on','off'],'LED state');text(n.label,'LED label',256);break;
    case 'progress':if(typeof n.value!=='number'||!Number.isFinite(n.value)||n.value<0||n.value>1)fail('progress value must be 0–1');text(n.label,'progress label',256);break;
-   case 'switch':{text(n.action,'switch action',64);text(n.label,'switch accessible label',256);choice(n.state,['on','off'],'switch state');if(n.size!==undefined){const size=n.size as Record<string,number>,scale=size.width/34;if(![1,2,3,4].includes(scale)||size.height!==20*scale)fail('switch size must be 34x20, 68x40, 102x60 or 136x80 to preserve its pixel grid');}if(n.onColor!==undefined)color(n.onColor);if(n.offColor!==undefined)color(n.offColor);break;}
+   case 'switch':
+    text(n.action,'switch action',64);
+    text(n.label,'switch accessible label',256);
+    choice(n.state,['on','off'],'switch state');
+    if(n.onColor!==undefined)color(n.onColor);
+    if(n.offColor!==undefined)color(n.offColor);
+    break;
    case 'button':text(n.action,'button action',64);text(n.label,'button accessible label',256);if(n.text!==undefined)text(n.text,'button text',256);if(n.icon!==undefined)source(n.icon);if(n.text===undefined&&n.icon===undefined)fail('button needs text or icon');if(n.textSize!==undefined)choice(n.textSize,[11,12,13,14],'button textSize');break;
   }
  }

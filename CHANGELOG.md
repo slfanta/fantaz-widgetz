@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 - 2026-11-20
+
+- Draw the switch with a rounded SVG track and a true circle. Default artwork is
+  16 × 8 CSS pixels, half the previous width and height. The desktop button is
+  34 × 20 CSS pixels and touch targets are at least 44 × 44 CSS pixels.
+- Fit the SVG proportionally within the inherited size and preserve the rendered
+  dimensions of explicitly sized 0.3.0 designs. Update the guide and demo.
+
 ## 0.3.0 - 2026-11-20
 
 - Remade the on/off switch as a flat low-resolution RGB565 capsule with a stepped

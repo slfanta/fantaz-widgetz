@@ -1,4 +1,4 @@
-# Public API 0.3.0
+# Public API 0.3.1
 
 The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-purpose framework. It can be consumed as a small TypeScript library plus optional Rust/Tauri adapter. Style consistency takes priority over freedom.
 
@@ -66,8 +66,8 @@ The renderer emits action strings; it does not download, browse, open files, del
 Read [ON_OFF_CONTROL.md](ON_OFF_CONTROL.md) for the complete agent contract,
 API/FTZML examples, shared geometry, exact color rules, accessibility and migration.
 
-The default switch is a 34x20 button with 32x16 low-resolution flat capsule and
-12x12 stepped circle. Its only control-specific appearance fields are `onColor`
+The default switch centers a smooth 16x8 SVG in a 34x20 desktop button.
+Its track is a rounded rectangle and its circle is 6 px in diameter. Its only control-specific appearance fields are `onColor`
 and `offColor`. The circle automatically brightens the active color; hover darkens
 only the track. All fills are RGB565. No bevel/shadow/gradient, separate circle
 color, local opacity, animation or style hooks exist. State/action/label/disabled
@@ -75,9 +75,9 @@ are operational fields. The host confirms the new state after an action; the
 renderer never runs business logic or changes state itself.
 
 `size` and `position` are inherited from the exported `Widget` base interface.
-Switch sizes preserve exact integer scaling: 34x20, 68x40, 102x60 or 136x80;
-the default is recommended. Coarse pointers expand the target to at least 44x44
-without changing artwork. Icon artwork separately uses `iconSize: 16 | 20`.
+Explicit sizes set the button box and fit the SVG proportionally within it.
+A 34x20 explicit size renders 32x16 artwork. Coarse pointers expand the target
+to at least 44x44 while the artwork keeps its selected dimensions. Icon artwork separately uses `iconSize: 16 | 20`.
 
 0.3.0 replaces the 0.2.0 switch `color` with `onColor`/`offColor`, removes its
 local opacity, and renames icon numeric `size` to `iconSize` so shared `size`

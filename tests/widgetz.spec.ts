@@ -30,7 +30,7 @@ test('unknown style/font/padding/HTML hooks are rejected atomically',async({page
  for(const extra of [{padding:12},{font:'Arial'},{className:'free'},{style:{color:'red'}},{html:'<script>bad</script>'}]){
   const error=await api(page,({extra}:any)=>{try{(window as any).fantazTest.view.update({type:'pad',id:'root',children:[],...extra});return '';}catch(e){return String(e);}},{extra});expect(error).toContain('unsupported');
  }
- await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.3.0');
+ await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.3.1');
 });
 test('text uses literal content and unsafe images/colors are rejected',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.setText('brand-label','<img src=x onerror=alert(1)>');const errors=[];for(const n of [{type:'icon',id:'icon',source:{image:'https://example.com/photo.png'}},{type:'text',id:'text',content:'ok',color:'url(evil)'},{type:'icon',id:'icon',source:{image:'data:image/svg+xml,<svg/>'}}]){try{f.view.update({type:'pad',id:'root',children:[n]});}catch(e){errors.push(String(e));}}return {errors,images:document.querySelectorAll('img').length};});expect(result.errors).toHaveLength(3);expect(result.images).toBe(0);await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('<img src=x onerror=alert(1)>');
@@ -77,12 +77,12 @@ test('mobile in-app controls use touch targets and fixed template keeps its boun
 });
 
 
-test('pixel switch round-trips on/off actions colors disabled and large icon through FTZML',async({page})=>{
+test('switch round-trips on/off actions colors disabled and large icon through FTZML',async({page})=>{
  const r=await page.evaluate(()=>{const f=(window as any).fantazTest;const design={version:1,pad:{type:'pad',id:'pad',children:[{type:'row',id:'row',children:[{type:'icon',id:'icon',source:{glyph:'app'},iconSize:20},{type:'switch',id:'switch',state:'on',action:'route',label:'Routing',onColor:'#b54d29',offColor:'#42414a',size:{width:68,height:40},position:{x:20,y:4},disabled:true}]}]}};return {design,xml:f.saveFTZML(design),roundtrip:f.parseFTZML(f.saveFTZML(design))};});
  expect(r.roundtrip).toEqual(r.design);expect(r.xml).toContain('<switch');expect(r.xml).toContain('iconSize="20"');expect(r.xml).toContain('width="68"');expect(r.xml).toContain('x="20"');
 });
 
-test('pixel switch is controlled accessible keyboard-operable and disabled-safe',async({page})=>{
+test('switch is controlled accessible keyboard-operable and disabled-safe',async({page})=>{
  await page.evaluate(()=>{const f=(window as any).fantazTest;(window as any).switchActions=[];f.view.onAction((id:string)=>(window as any).switchActions.push(id));f.view.update({type:'pad',id:'pad',children:[{type:'switch',id:'switch',state:'off',action:'route',label:'Routing'}]});});
  const toggle=page.getByRole('switch',{name:'Routing'});await expect(toggle).toHaveAttribute('aria-checked','false');await toggle.click();
  expect(await page.evaluate(()=>(window as any).switchActions)).toEqual(['route']);await expect(toggle).toHaveAttribute('aria-checked','false');
@@ -92,32 +92,37 @@ test('pixel switch is controlled accessible keyboard-operable and disabled-safe'
  await page.evaluate(()=>{document.querySelector<HTMLButtonElement>('.fw-switch')!.click();});expect(await page.evaluate(()=>(window as any).switchActions)).toHaveLength(3);
 });
 
-test('pixel switch FTZML rejects invalid state injected attributes and arbitrary sizes atomically',async({page})=>{
+test('switch FTZML rejects invalid state injected attributes and invalid fields atomically',async({page})=>{
  for(const body of ['<switch id="s" state="maybe" action="x" label="X"/>','<switch id="s" state="on" action="x" label="X" onclick="evil"/>','<icon id="i" glyph="app" iconSize="19"/>','<switch id="s" state="off" action="x" label="X" disabled="yes"/>']){
   const error=await page.evaluate(body=>{try{(window as any).fantazTest.view.load((window as any).fantazTest.parseFTZML('<ftzml version="1"><pad id="p">'+body+'</pad></ftzml>'));return '';}catch(e){return String(e);}},body);expect(error).toContain('Fantaz Widgetz');
  }
  await expect(page.locator('[data-ftz-id="brand-label"]')).toContainText('Fantaz Widgetz');
 });
 
-test('pixel switch gets a 44px touch target without changing compact rail',async({browser})=>{
+test('switch gets a 44px touch target without changing compact rail',async({browser})=>{
  const context=await browser.newContext({viewport:{width:180,height:60},hasTouch:true,isMobile:true});const page=await context.newPage();await page.goto('/');await page.evaluate(()=>{(window as any).fantazTest.view.update({type:'pad',id:'p',children:[{type:'switch',id:'s',action:'toggle',state:'off',label:'Routing'}]});});
- const size=await page.getByRole('switch').evaluate(el=>({height:el.getBoundingClientRect().height,rail:el.querySelector('.fw-switch-rail')!.getBoundingClientRect().height}));expect(size).toEqual({height:44,rail:16});await context.close();
+ const size=await page.getByRole('switch').evaluate(el=>({height:el.getBoundingClientRect().height,rail:el.querySelector('.fw-switch-rail')!.getBoundingClientRect().height}));expect(size).toEqual({height:44,rail:8});await context.close();
 });
 
-test('flat switch derives RGB565 circle and darkens only track in both states',async({page})=>{
+test('compact SVG switch derives its RGB565 circle and darkens only the track',async({page})=>{
  await page.evaluate(()=>{(window as any).fantazTest.view.update({type:'pad',id:'p',children:[{type:'switch',id:'s',action:'toggle',state:'on',label:'Flat switch',onColor:'#b54d29',offColor:'#42414a'}]});});
  const toggle=page.getByRole('switch',{name:'Flat switch'});
  const colors=()=>toggle.evaluate(el=>({track:getComputedStyle(el.querySelector('.fw-switch-track')!).fill,circle:getComputedStyle(el.querySelector('.fw-switch-thumb')!).fill,shadow:getComputedStyle(el).boxShadow,background:getComputedStyle(el).backgroundImage,shape:el.querySelector('svg')!.getAttribute('shape-rendering')}));
  for(const state of ['on','off']){
   await page.mouse.move(700,400);await page.evaluate(state=>{const f=(window as any).fantazTest,d=f.view.design();d.pad.children[0].state=state;f.view.update(d.pad);},state);
   const plain=await colors();await toggle.hover();const hover=await colors();
-  expect(hover.track).not.toBe(plain.track);expect(hover.circle).toBe(plain.circle);expect(plain).toMatchObject({shadow:'none',background:'none',shape:'crispEdges'});
+  expect(hover.track).not.toBe(plain.track);expect(hover.circle).toBe(plain.circle);expect(plain).toMatchObject({shadow:'none',background:'none',shape:null});
   const rgb=(s:string)=>s.match(/\d+/g)!.map(Number),base=rgb(plain.track),circle=rgb(plain.circle),dark=rgb(hover.track);
   expect(circle.every((n,i)=>n>base[i])).toBe(true);expect(dark.every((n,i)=>n<base[i])).toBe(true);
   for(const color of [base,circle,dark])for(const [i,n] of color.entries()){const levels=i===1?63:31;expect(Array.from({length:levels+1},(_,k)=>Math.round(k*255/levels))).toContain(n);}
  }
- const geometry=await toggle.evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,railWidth:el.querySelector('svg')!.getBoundingClientRect().width,railHeight:el.querySelector('svg')!.getBoundingClientRect().height,thumbWidth:el.querySelector('.fw-switch-thumb')!.getBoundingClientRect().width}));
- expect(geometry).toEqual({width:34,height:20,railWidth:32,railHeight:16,thumbWidth:12});
+ const dimensions = await toggle.evaluate(button => {
+  const target = button.getBoundingClientRect();
+  const track = button.querySelector('svg rect')!.getBoundingClientRect();
+  const thumb = button.querySelector('svg circle')!.getBoundingClientRect();
+  return {target:[target.width,target.height], track:[track.width,track.height], thumb:[thumb.width,thumb.height]};
+ });
+ expect(dimensions).toEqual({target:[34,20],track:[16,8],thumb:[6,6]});
  await page.screenshot({path:'.runtime/flat-switch-off-hover.png'});
 });
 
@@ -127,15 +132,19 @@ test('size and position belong to every widget and removed geometry restores flo
   f.view.update(pad);const el=document.querySelector<HTMLElement>('.fw-switch')!,before=el,svg=el.querySelector('svg')!;
   const exact={width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,left:el.style.left,top:el.style.top,position:getComputedStyle(el).position,rail:svg.getBoundingClientRect().width,textLeft:document.querySelector<HTMLElement>('.fw-text')!.style.left};
   const roundtrip=f.parseFTZML(f.saveFTZML(f.view.design()));
+  pad.children[1].size={width:51,height:20};f.view.update(pad);
+  const track=svg.querySelector('rect')!.getBoundingClientRect(),thumb=svg.querySelector('circle')!.getBoundingClientRect();
+  const proportional={target:el.getBoundingClientRect().width,track:[track.width,track.height],thumb:[thumb.width,thumb.height]};
   delete (pad.children[1] as any).size;delete (pad.children[1] as any).position;f.view.update(pad);
-  return {exact,roundtrip,same:before===document.querySelector('.fw-switch'),restored:{width:el.getBoundingClientRect().width,left:el.style.left,top:el.style.top,position:el.style.position}};
+  return {exact,roundtrip,proportional,same:before===document.querySelector('.fw-switch'),restored:{width:el.getBoundingClientRect().width,left:el.style.left,top:el.style.top,position:el.style.position}};
  });
  expect(result.exact).toEqual({width:68,height:40,left:'160px',top:'20px',position:'absolute',rail:64,textLeft:'8px'});expect(result.same).toBe(true);expect(result.restored).toEqual({width:34,left:'',top:'',position:''});
  expect(result.roundtrip.pad.size).toEqual({width:260,height:90});expect(result.roundtrip.pad.children[1].position).toEqual({x:160,y:20});
+ expect(result.proportional).toEqual({target:51,track:[32,16],thumb:[12,12]});
 });
 
-test('switch rejects extra styling fields and nonpixel geometry before changing the view',async({page})=>{
- for(const extra of [{color:'#ffffff'},{circleColor:'#ffffff'},{thumbColor:'#ffffff'},{hoverColor:'#ffffff'},{opacity:5},{radius:8},{relief:'raised'},{size:{width:35,height:20}},{size:{width:34.5,height:20}},{position:{x:.5,y:0}},{position:{x:0,y:0,mode:'fixed'}},{onColor:'red'},{offColor:'url(evil)'}]){
+test('switch rejects extra styling fields and invalid geometry before changing the view',async({page})=>{
+ for(const extra of [{color:'#ffffff'},{circleColor:'#ffffff'},{thumbColor:'#ffffff'},{hoverColor:'#ffffff'},{opacity:5},{radius:8},{relief:'raised'},{size:{width:0,height:20}},{size:{width:34.5,height:20}},{position:{x:.5,y:0}},{position:{x:0,y:0,mode:'fixed'}},{onColor:'red'},{offColor:'url(evil)'}]){
   const error=await page.evaluate(extra=>{try{(window as any).fantazTest.view.update({type:'pad',id:'p',children:[{type:'switch',id:'s',state:'on',label:'Switch',action:'switch',...extra}]});return '';}catch(e){return String(e);}},extra);expect(error).toContain('Fantaz Widgetz');
  }
  for(const body of ['<switch id="s" state="on" action="x" label="X" color="#ffffff"/>','<switch id="s" state="off" action="x" label="X" circleColor="#ffffff"/>','<switch id="s" state="on" action="x" label="X" width="34"/>','<switch id="s" state="on" action="x" label="X" x="0"/>']){

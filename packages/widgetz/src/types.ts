@@ -20,7 +20,7 @@ export interface Led extends Base {type:'led'; state:'on'|'off'; color?:Color; l
 export interface Divider extends Base {type:'divider'}
 export interface Progress extends Base {type:'progress'; value:number; color?:Color; label:string}
 export interface Button extends Base {type:'button'; action:string; label:string; text?:string; icon?:IconSource; color?:Color; textSize?:11|12|13|14; wrap?:boolean; align?:Align; disabled?:boolean}
-/** Appearance is limited to integer pixel scale and two state colors. */
+/** The switch adds two state colors to the common widget geometry. */
 export interface Switch extends Widget {type:'switch'; action:string; label:string; state:'on'|'off'; disabled?:boolean; onColor?:Color; offColor?:Color}
 export type Element = Row|Column|Text|Icon|Led|Divider|Progress|Button|Switch;
 export type Node = Pad|Element;

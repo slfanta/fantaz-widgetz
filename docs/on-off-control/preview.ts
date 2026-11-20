@@ -11,5 +11,5 @@ const design=():Pad=>({type:'pad',id:'reference',children:[
 view.update(design());
 view.onAction(action=>{if(action==='toggle'){enabled=!enabled;view.update(design());}});
 const positioned=mount(document.querySelector<HTMLElement>('#geometry')!);
-positioned.update({type:'pad',id:'geometry',children:[{type:'text',id:'scale-label',content:'Shared geometry',position:{x:8,y:8}},{type:'switch',id:'scaled',state:'on',action:'scaled',label:'Double-size control',size:{width:68,height:40},position:{x:220,y:18}}]});
+positioned.update({type:'pad',id:'geometry',children:[{type:'text',id:'scale-label',content:'Shared geometry',position:{x:8,y:8}},{type:'switch',id:'scaled',state:'on',action:'scaled',label:'Double-size control',size:{width:34,height:20},position:{x:220,y:18}}]});
 window.addEventListener('pagehide',()=>{view.destroy();positioned.destroy();},{once:true});
