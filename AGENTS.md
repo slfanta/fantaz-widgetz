@@ -11,6 +11,8 @@ Library users can start with [the quick start](docs/QUICK_START.md).
 
 Read README.md and docs/{PHILOSOPHY,API,INTEGRATION}.md before changes. Work only in this independent project, never a reference downloader.
 
+Use Windows CSS pixels for design dimensions unless the user specifies another unit. Label physical pixels explicitly in screenshots and native window measurements.
+
 For cross-project result-pad work, read docs/notification-pad-reference/README.md.
 It exports the larger 360x88, opacity-9 composition as FTZML/API examples. The
 built-in 0.1.0 adapter remains 284x64; do not invent native sizing API or override

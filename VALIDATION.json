@@ -156,7 +156,8 @@
                        "developerAuthorization":  "Explicit user authorization for the current task",
                        "validation":  "Reviewed role instructions and cross-links. Verified released package and demo hashes."
                    },
+    "designUnits":  "Windows CSS pixels by default. Physical pixels are identified explicitly.",
     "binary":  "releases/fantaz-widgetz-demo-0.4.0.exe",
     "binarySha256":  "5298532f99563e9c12351904838986fce115798b87acb3d012a792c56d888440",
-    "checkpointTag":  "fantaz-widgetz-v0.4.0-widget-anchors-inset-frame-20261120"
+    "checkpointTag":  "fantaz-widgetz-v0.4.0-windows-css-pixel-convention-20261120"
 }
