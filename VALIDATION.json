@@ -143,7 +143,12 @@
                         "RGB565 applies to rendered solid fills; ancestor compositing, browser zoom, OS scaling and display output remain host concerns.",
                         "Mobile support is embedded content with a minimum 44px touch target; mobile OS overlays are not implemented."
                     ],
+    "quickStart":  {
+                       "path":  "docs/QUICK_START.md",
+                       "version":  "0.3.2",
+                       "validation":  "Installed the released package in an isolated host, type-checked the guide example, resolved guide links and verified mouse and keyboard toggling in Edge."
+                   },
     "binary":  "releases/fantaz-widgetz-demo-0.3.2.exe",
     "binarySha256":  "158c499a85ad27a9e5466f9e05244bc4bb28c59bde7ec98fb47a78e10042dd26",
-    "checkpointTag":  "fantaz-widgetz-v0.3.2-borderless-switch-20261120"
+    "checkpointTag":  "fantaz-widgetz-v0.3.2-agent-quick-start-20261120"
 }

@@ -2,6 +2,8 @@
 
 Read README.md and docs/{PHILOSOPHY,API,INTEGRATION}.md before changes. Work only in this independent project, never a reference downloader.
 
+For agents integrating the library into a host, start with [the quick start](docs/QUICK_START.md).
+
 For cross-project result-pad work, read docs/notification-pad-reference/README.md.
 It exports the larger 360x88, opacity-9 composition as FTZML/API examples. The
 built-in 0.1.0 adapter remains 284x64; do not invent native sizing API or override

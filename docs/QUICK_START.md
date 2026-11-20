@@ -1,0 +1,57 @@
+# Fantaz Widgetz quick start for agents
+
+Use `@fantaz/widgetz` to render a compact pad inside a browser or WebView. In the
+host project, install the local 0.3.2 package. Adjust the path for your checkout.
+
+```sh
+npm install C:/projs/fantaz-widgetz/releases/fantaz-widgetz-0.3.2.tgz
+```
+
+Give the pad a mount element with room for its contents.
+
+```html
+<div id="widget" style="width: 220px; height: 56px"></div>
+```
+
+Run this TypeScript in the host frontend after the mount element exists. The
+example toggles local state. For a real operation, update the view after the
+host confirms the change.
+
+```ts
+import { mount } from '@fantaz/widgetz';
+import '@fantaz/widgetz/style.css';
+
+const view = mount(document.querySelector<HTMLElement>('#widget')!);
+let enabled = false;
+
+function render() {
+  view.update({
+    type: 'pad', id: 'settings', children: [{
+      type: 'row', id: 'feature-row', children: [
+        { type: 'text', id: 'name', content: 'Feature' },
+        { type: 'switch', id: 'power', label: 'Feature enabled',
+          state: enabled ? 'on' : 'off', action: 'toggle-feature' },
+      ],
+    }],
+  });
+}
+
+view.onAction(action => {
+  if (action !== 'toggle-feature') return;
+  enabled = !enabled;
+  render();
+});
+render();
+// Call view.destroy() when the host removes the pad.
+```
+
+- **Layout.** Compose one `pad` from rows, columns and controls with unique IDs.
+  Use the bundled stylesheet. Optional `size` and `position` use CSS pixels.
+  WebView2 applies Windows display scaling automatically. [API](API.md)
+- **Switch.** Set `state` from the host. For custom colors, use `onColor` and
+  `offColor`. Widgetz derives the circle and hover fills. [Switch guide](ON_OFF_CONTROL.md)
+- **Saved layouts.** Load with `view.load(parseFTZML(xml))` and save with
+  `saveFTZML(view.design())`. [FTZML](FTZML.md)
+- **Notifications.** Use `view.update(downloadNotice(result))` for an embedded
+  result pad. For a desktop corner window, use the Tauri 2 adapter.
+  [Host integration](INTEGRATION.md)

@@ -1,5 +1,9 @@
 # Changelog
 
+## Guide revision - 2026-11-20
+
+- Add a short agent quick start for Widgetz 0.3.2 with a working switch example.
+
 ## 0.3.2 - 2026-11-20
 
 - Increase the default switch artwork to 20.8 × 10.4 CSS pixels. WebView2 maps
