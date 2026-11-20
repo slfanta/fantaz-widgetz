@@ -1,11 +1,11 @@
 ﻿{
-    "version":  "0.3.2",
+    "version":  "0.4.0",
     "date":  "2026-11-20",
     "timezone":  "Asia/Taipei",
     "passed":  true,
     "project":  "Fantaz Widgetz",
-    "previousCheckpoint":  "67014ec",
-    "previousValidation":  "docs/validation/before-0.3.2.json",
+    "previousCheckpoint":  "671ddf8",
+    "previousValidation":  "docs/validation/before-0.4.0.json",
     "controlGuide":  "docs/ON_OFF_CONTROL.md",
     "interactiveReference":  "docs/on-off-control/preview.html",
     "control":  {
@@ -64,13 +64,15 @@
                            "removalRestoresFlow":  true,
                            "ftzml":  "width/height and x/y roundtrip to size/position",
                            "iconArtworkPreset":  "iconSize: 16|20; separate from inherited size",
-                           "explicitSwitchSize":  "Sets the button box and SVG viewport. Existing 0.3.0 dimensions render at their previous artwork scale."
+                           "explicitSwitchSize":  "Sets the button box and SVG viewport. Existing 0.3.0 dimensions render at their previous artwork scale.",
+                           "anchor":  "Nine inherited anchor points with optional offsets. Legacy absolute coordinates are supported.",
+                           "frameInsetCssPixels":  1
                        },
     "browserTests":  {
-                         "passed":  26,
+                         "passed":  28,
                          "browser":  "Microsoft Edge via Playwright",
                          "command":  "npm test",
-                         "scope":  "Both state colors, track-only hover, borderless keyboard focus, SVG geometry, proportional sizing, touch target, FTZML, notifications and reference preview."
+                         "scope":  "Existing control, template, notification and lifecycle checks plus all nine anchors, FTZML round trips, compact control centering and all four frame edges after a one-physical-pixel crop at 125% DPI."
                      },
     "rustTests":  {
                       "passed":  6,
@@ -80,7 +82,7 @@
     "clippy":  "passed cargo clippy --workspace --all-targets --locked -- -D warnings",
     "frontend":  "Strict TypeScript, package declaration/JS/CSS/guide build, Vite production build; docs reference included in strict checking",
     "native":  {
-                   "version":  "0.3.2",
+                   "version":  "0.4.0",
                    "native":  true,
                    "flatSwitchMouseKeyboard":  true,
                    "switchGeometry":  {
@@ -89,7 +91,7 @@
                                           "devicePixelRatio":  1.25
                                       },
                    "switchBorderlessOnFocus":  true,
-                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795170219233",
+                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795174186358",
                    "pad":  {
                                "title":  "Fantaz Widgetz notification",
                                "visible":  true,
@@ -124,13 +126,13 @@
                                  "newRuntimeVariants":  0,
                                  "tauriSourceSha256":  "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
                                  "toolchain":  "rustc 1.97.0 (2d8144b78 2026-07-07)\r\nbinary: rustc\r\ncommit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3\r\ncommit-date: 2026-07-07\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.97.0\r\nLLVM version: 22.1.6",
-                                 "lockSha256":  "f4e36f58d8092c5585adf156f10632e5ec7449bef45613856de05d3f53181267"
+                                 "lockSha256":  "c1ab1f3d30c6f9cc494cbfd15088c7a68121b9b3b3989444140750858ba94004"
                              },
     "package":  {
-                    "path":  "releases/fantaz-widgetz-0.3.2.tgz",
-                    "bytes":  20863,
-                    "sha256":  "5f68525bf3f55ce75150b61a0d7d27d7a8a7d3bb1d21a5357376fe64227a0c77",
-                    "unpackedBytes":  65177,
+                    "path":  "releases/fantaz-widgetz-0.4.0.tgz",
+                    "bytes":  21664,
+                    "sha256":  "29c3b2929071202fe8b7313f93c688eab1278b4b35367cf1349b20430c858c21",
+                    "unpackedBytes":  67926,
                     "guideIncluded":  true,
                     "everyPackedFileMatchesCurrentBuild":  true
                 },
@@ -145,8 +147,8 @@
                     ],
     "quickStart":  {
                        "path":  "docs/QUICK_START.md",
-                       "version":  "0.3.2",
-                       "validation":  "Installed the released package in an isolated host, type-checked the guide example, resolved guide links and verified mouse and keyboard toggling in Edge."
+                       "version":  "0.4.0",
+                       "validation":  "Updated pinned release link and anchor quick start. Existing switch interaction is covered in the browser suite."
                    },
     "agentRoles":  {
                        "path":  "AGENTS.md",
@@ -154,7 +156,7 @@
                        "developerAuthorization":  "Explicit user authorization for the current task",
                        "validation":  "Reviewed role instructions and cross-links. Verified released package and demo hashes."
                    },
-    "binary":  "releases/fantaz-widgetz-demo-0.3.2.exe",
-    "binarySha256":  "158c499a85ad27a9e5466f9e05244bc4bb28c59bde7ec98fb47a78e10042dd26",
-    "checkpointTag":  "fantaz-widgetz-v0.3.2-agent-roles-20261120"
+    "binary":  "releases/fantaz-widgetz-demo-0.4.0.exe",
+    "binarySha256":  "5298532f99563e9c12351904838986fce115798b87acb3d012a792c56d888440",
+    "checkpointTag":  "fantaz-widgetz-v0.4.0-widget-anchors-inset-frame-20261120"
 }

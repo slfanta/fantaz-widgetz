@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 const api=(page:any,fn:any,arg?:unknown)=>page.evaluate(fn,arg);
 test.beforeEach(async({page})=>{await page.goto('/');await expect(page.locator('[data-ftz-id="brand-label"]')).toContainText('Fantaz Widgetz');});
 test('notification remains two compact rows with exact fixed geometry',async({page})=>{
- await page.setViewportSize({width:284,height:64});await page.locator('[data-action="success"]').click();
+ await page.locator('[data-action="success"]').click();await page.setViewportSize({width:284,height:64});
  await expect(page.locator('[data-ftz-id="outcome"] .fw-run')).toHaveText('Download saved');
  const geometry=await page.evaluate(()=>{const css=(s:string)=>getComputedStyle(document.querySelector(s)!);return {pad:css('.fw-pad').padding,radius:css('.fw-pad').borderRadius,progress:css('.fw-progress').height,divider:css('.fw-divider').height,font:css('.fw-text').fontWeight,scroll:document.body.scrollWidth,width:innerWidth,height:document.querySelector('.fw-pad')!.scrollHeight};});
  expect(geometry).toEqual({pad:'4px',radius:'0px',progress:'3px',divider:'1px',font:'400',scroll:284,width:284,height:62});
@@ -13,7 +13,7 @@ test('failure content and fixed close button do not invoke business operations',
  await page.getByRole('button',{name:'Dismiss notification'}).click();await expect(page.locator('[data-ftz-id="brand-label"]')).toBeVisible();
 });
 test('identical updates retain nodes and rolling animation phase',async({page})=>{
- await page.setViewportSize({width:200,height:64});await page.locator('[data-action="failure"]').click();await page.waitForTimeout(80);
+ await page.locator('[data-action="failure"]').click();await page.setViewportSize({width:200,height:64});await page.waitForTimeout(80);
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;const el=document.querySelector('[data-ftz-id="message"]')!;const a=el.firstElementChild!.getAnimations()[0];const before=a.currentTime;f.view.update(f.view.design().pad);return {node:el===document.querySelector('[data-ftz-id="message"]'),animation:a===el.firstElementChild!.getAnimations()[0],before,after:a.currentTime};});
  expect(result.node).toBe(true);expect(result.animation).toBe(true);expect(Number(result.after)).toBeGreaterThanOrEqual(Number(result.before));
 });
@@ -22,7 +22,7 @@ test('short centered text stays centered and has no animation',async({page})=>{
  const state=await page.locator('[data-ftz-id="label"]').evaluate(el=>({align:getComputedStyle(el).textAlign,animated:el.getAnimations({subtree:true}).length}));expect(state).toEqual({align:'center',animated:0});
 });
 test('reduced motion stops automatic ticker and manual/accessible reading survives',async({page})=>{
- await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:200,height:64});await page.locator('[data-action="failure"]').click();
+ await page.emulateMedia({reducedMotion:'reduce'});await page.locator('[data-action="failure"]').click();await page.setViewportSize({width:200,height:64});
  const el=page.locator('[data-ftz-id="message"]');await expect(el).toHaveAttribute('aria-label',/very-long-example/);await el.focus();await page.keyboard.press('ArrowRight');
  expect(await el.evaluate(e=>e.getAnimations({subtree:true}).length)).toBe(0);expect(await el.evaluate(e=>e.scrollWidth>e.clientWidth)).toBe(true);
 });
@@ -30,7 +30,7 @@ test('unknown style/font/padding/HTML hooks are rejected atomically',async({page
  for(const extra of [{padding:12},{font:'Arial'},{className:'free'},{style:{color:'red'}},{html:'<script>bad</script>'}]){
   const error=await api(page,({extra}:any)=>{try{(window as any).fantazTest.view.update({type:'pad',id:'root',children:[],...extra});return '';}catch(e){return String(e);}},{extra});expect(error).toContain('unsupported');
  }
- await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.3.2');
+ await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.4.0');
 });
 test('text uses literal content and unsafe images/colors are rejected',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.setText('brand-label','<img src=x onerror=alert(1)>');const errors=[];for(const n of [{type:'icon',id:'icon',source:{image:'https://example.com/photo.png'}},{type:'text',id:'text',content:'ok',color:'url(evil)'},{type:'icon',id:'icon',source:{image:'data:image/svg+xml,<svg/>'}}]){try{f.view.update({type:'pad',id:'root',children:[n]});}catch(e){errors.push(String(e));}}return {errors,images:document.querySelectorAll('img').length};});expect(result.errors).toHaveLength(3);expect(result.images).toBe(0);await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('<img src=x onerror=alert(1)>');
@@ -72,7 +72,7 @@ test('FTZML example renders and close returns to demo',async({page})=>{
  await page.locator('[data-action="ftzml"]').click();await expect(page.locator('[data-ftz-id="message"]')).toContainText('example-video.mp4');await page.locator('[data-action="dismiss"]').click();await expect(page.locator('[data-ftz-id="brand-label"]')).toBeVisible();
 });
 test('mobile in-app controls use touch targets and fixed template keeps its bounds',async({browser})=>{
- const context=await browser.newContext({viewport:{width:320,height:88},isMobile:true,hasTouch:true,reducedMotion:'reduce'});const page=await context.newPage();await page.goto('/');await page.locator('[data-action="failure"]').click();
+ const context=await browser.newContext({viewport:{width:320,height:320},isMobile:true,hasTouch:true,reducedMotion:'reduce'});const page=await context.newPage();await page.goto('/');await page.locator('[data-action="failure"]').click();await page.setViewportSize({width:320,height:88});
  expect(await page.evaluate(()=>document.body.scrollWidth)).toBe(320);expect(await page.locator('[data-ftz-id="close"]').evaluate(e=>e.getBoundingClientRect().height)).toBe(44);await page.screenshot({path:'.runtime/failure-touch-320x88.png'});await context.close();
 });
 
@@ -175,4 +175,96 @@ test('standalone control reference uses the public library and keeps default and
  await expect(page.getByRole('switch',{name:'Off example'})).toHaveAttribute('aria-checked','false');
  await expect(page.getByRole('switch',{name:'Larger control'})).toBeVisible();
  await page.mouse.move(600,400);await page.screenshot({path:'.runtime/flat-switch-reference.png'});
+});
+
+test('all nine FTZML anchors work on a pad and its elements, with optional offsets', async ({page}) => {
+ const results = await page.evaluate(() => {
+  const {view, parseFTZML, saveFTZML} = (window as any).fantazTest;
+  const read = (id: string) => document.querySelector(`[data-ftz-id="${id}"]`)!.getBoundingClientRect();
+  const design = parseFTZML(`<ftzml version="1">
+   <pad id="anchors" anchor="center" width="180" height="90">
+    <icon id="top-left" anchor="upper-left" glyph="app"/>
+    <text id="top-center" anchor="upper-center">Top</text>
+    <led id="top-right" anchor="upper-right" state="on" label="Ready"/>
+    <text id="mid-left" anchor="center-left">Left</text>
+    <row id="middle" anchor="center" width="34" height="20">
+     <switch id="switch" anchor="center" action="power" state="on" label="Power"/>
+    </row>
+    <button id="mid-right" anchor="center-right" action="open" text="Open" label="Open"/>
+    <text id="bottom-left" anchor="lower-left" x="2">Left</text>
+    <text id="bottom-center" anchor="lower-center">Bottom</text>
+    <text id="bottom-right" anchor="lower-right" x="-2" y="-3">Right</text>
+   </pad>
+  </ftzml>`);
+  view.load(design);
+  const box = read('anchors');
+  const assertEdges = (id: string) => {
+   const rect = read(id);
+   return {
+    left: rect.left - box.left, right: box.right - rect.right,
+    top: rect.top - box.top, bottom: box.bottom - rect.bottom,
+    dx: rect.x + rect.width / 2 - box.x - box.width / 2,
+    dy: rect.y + rect.height / 2 - box.y - box.height / 2,
+   };
+  };
+  return {original: design, saved: parseFTZML(saveFTZML(view.design())),
+   pad: [box.x, box.y, box.width, box.height],
+   positions: Object.fromEntries(['top-left','top-center','top-right','mid-left','middle','mid-right','bottom-left','bottom-center','bottom-right','switch'].map(id => [id, assertEdges(id)])),
+  };
+ });
+ expect(results.pad).toEqual([90,75,180,90]);
+ const p = results.positions;
+ expect(p['top-left']).toMatchObject({left:5,top:5});
+ expect(p['top-center'].dx).toBeCloseTo(0, 1);
+ expect(p['top-center'].top).toBe(5);
+ // LEDs retain their built-in 2 px horizontal margin.
+ expect(p['top-right']).toMatchObject({right:7,top:5});
+ expect(p['mid-left']).toMatchObject({left:5,dy:0});
+ expect(p.middle).toMatchObject({dx:0,dy:0});
+ expect(p.switch).toMatchObject({dx:0,dy:0});
+ expect(p['mid-right']).toMatchObject({right:5,dy:0});
+ expect(p['bottom-left']).toMatchObject({left:7,bottom:5});
+ expect(p['bottom-center'].dx).toBeCloseTo(0, 1);
+ expect(p['bottom-center'].bottom).toBe(5);
+ expect(p['bottom-right']).toMatchObject({right:7,bottom:8});
+ expect(results.saved.pad).toEqual(results.original.pad);
+});
+
+test('compact centered row keeps all four frame edges inside a fractionally scaled viewport', async ({browser}) => {
+ const page = await browser.newPage({viewport:{width:136,height:38},deviceScaleFactor:1.25});
+ try {
+  await page.goto('/');
+  await page.evaluate(async () => {
+   const {view, parseFTZML} = (window as any).fantazTest;
+   view.load(parseFTZML(await fetch('/templates/pixel-switch.ftzml').then(r => r.text())));
+  });
+ const screenshot = await page.screenshot({path:'.runtime/compact-anchored-pad.png',omitBackground:true});
+  // The reported host shows 169 x 47 of its 170 x 48 px WebView surface.
+  const visibleFrame = await page.evaluate(async png => {
+   const image = await createImageBitmap(new Blob([Uint8Array.from(atob(png), c => c.charCodeAt(0))], {type:'image/png'}));
+   const canvas = new OffscreenCanvas(169,47);
+   const ctx = canvas.getContext('2d')!;
+   ctx.drawImage(image, 0, 0);
+   const hasFrame = (x: number, y: number, width: number, height: number) => {
+    const rgba = ctx.getImageData(x,y,width,height).data;
+    for(let i=0;i<rgba.length;i+=4) {
+     // Fractional DPI blends the purple frame into the dark pad surface.
+     if(rgba[i+2]>=100&&rgba[i+2]-rgba[i]>=30&&rgba[i+3]>=128)return true;
+    }
+    return false;
+   };
+   return [hasFrame(85,0,1,4),hasFrame(165,24,4,1),hasFrame(85,43,1,4),hasFrame(0,24,4,1)];
+  }, screenshot.toString('base64'));
+  expect(visibleFrame).toEqual([true,true,true,true]);
+  for(const height of [38,28]) {
+   await page.setViewportSize({width:136,height});
+   const centers = await page.evaluate(() => ['.fw-pad','.fw-row','.fw-icon','.fw-text','.fw-switch-rail'].map(selector => {
+    const rect = document.querySelector(selector)!.getBoundingClientRect();
+    return rect.y + rect.height / 2;
+   }));
+   for(const center of centers)expect(center).toBeCloseTo(height/2,1);
+  }
+ } finally {
+  await page.close();
+ }
 });

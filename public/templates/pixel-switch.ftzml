@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ftzml version="1">
   <pad id="control" opacity="10">
-    <row id="row">
+    <row id="row" anchor="center" width="123" height="20">
       <icon id="app-icon" glyph="app" label="Application" iconSize="20"/>
       <text id="status">Connection</text>
       <switch id="power" action="toggle-connection" label="Connection enabled" state="on" onColor="#298c7b" offColor="#42414a"/>

@@ -22,11 +22,41 @@ function icon(source:IconSource):HTMLElement {
  else {const img=document.createElement('img');img.src=source.image;img.alt='';img.draggable=false;img.decoding='async';holder.append(img);}
  return holder;
 }
+function positionWidget(el: HTMLElement, {position, anchor}: Node) {
+ const style = el.style;
+ style.position = position || anchor ? 'absolute' : '';
+ style.inset = '';
+ style.justifySelf = '';
+ style.alignSelf = '';
+ el.toggleAttribute('data-fw-anchored', anchor !== undefined);
+
+ if (!anchor) {
+  style.left = position ? `${position.x}px` : '';
+  style.top = position ? `${position.y}px` : '';
+  return;
+ }
+
+ const {x = 0, y = 0} = position ?? {};
+ const inset = '--fw-anchor-inset';
+ style.inset = `calc(var(${inset}) + ${y}px) calc(var(${inset}) - ${x}px) calc(var(${inset}) - ${y}px) calc(var(${inset}) + ${x}px)`;
+ style.justifySelf = anchor.endsWith('-left') ? 'safe left' : anchor.endsWith('-right') ? 'safe right' : 'safe center';
+ style.alignSelf = anchor.startsWith('upper-') ? 'safe start' : anchor.startsWith('lower-') ? 'safe end' : 'safe center';
+}
 export function mount(target:HTMLElement):WidgetView {
  const records=new Map<string,RecordNode>();const actions=new Set<(id:string)=>void>();
  const motions=new Map<string,{animation:Animation;motion:Motion}>();
  const declared=new Map<string,Motion>();
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let current:Design|null=null;let dead=false;
+ let ownsAnchorHost = false;
+ function setAnchorHost(anchored: boolean) {
+  if (anchored && !target.classList.contains('fw-anchor-host') && getComputedStyle(target).position === 'static') {
+   target.classList.add('fw-anchor-host');
+   ownsAnchorHost = true;
+  } else if (!anchored && ownsAnchorHost) {
+   target.classList.remove('fw-anchor-host');
+   ownsAnchorHost = false;
+  }
+ }
  const observer=new ResizeObserver(entries=>{for(const e of entries){const r=records.get((e.target as HTMLElement).dataset.ftzId!);if(r)measure(r);}});
  function cancelRoll(r:RecordNode){r.rolling?.cancel();r.rolling=undefined;r.distance=undefined;if(r.copy)r.copy.hidden=true;r.el.dataset.rolling='false';}
  function measure(r:RecordNode){
@@ -57,7 +87,7 @@ export function mount(target:HTMLElement):WidgetView {
   r.el.style.width=s.size?`${s.size.width}px`:'';r.el.style.height=s.size?`${s.size.height}px`:'';
   r.el.style.flex=s.size?'0 0 auto':'';
   r.el.style.minHeight=s.size&&s.type!=='switch'?'0px':'';
-  r.el.style.position=s.position?'absolute':'';r.el.style.left=s.position?`${s.position.x}px`:'';r.el.style.top=s.position?`${s.position.y}px`:'';
+  positionWidget(r.el, s);
   const nextOpacity='opacity'in s?s.opacity:undefined,oldOpacity='opacity'in old?old.opacity:undefined;
   if(fresh||oldOpacity!==nextOpacity){stopMotion(s.id+':opacity');r.el.style.opacity=nextOpacity===undefined?'':String(opacity(nextOpacity));}
   const newColor='color'in s?s.color:undefined;const oldColor='color'in old?old.color:undefined;
@@ -87,6 +117,7 @@ export function mount(target:HTMLElement):WidgetView {
  }
  function update(pad:Pad){
   if(dead)fail('view was destroyed');validatePad(pad);const next=structuredClone(pad);const seen=new Set<string>();
+  setAnchorHost(next.anchor !== undefined);
   function walk(s:Node,parent:HTMLElement,index:number){
    let r=records.get(s.id);if(r&&r.spec.type!==s.type){remove(s.id);r=undefined;}
    const fresh=!r;if(!r){r=newRecord(s);records.set(s.id,r);}seen.add(s.id);patch(r,s,fresh);
@@ -123,6 +154,6 @@ export function mount(target:HTMLElement):WidgetView {
   setIcon(id,source){mutate(id,n=>{if(n.type!=='icon')fail('setIcon needs icon');n.source=source;});},
   setProgress(id,value){mutate(id,n=>{if(n.type!=='progress')fail('setProgress needs progress');n.value=value;});},
   onAction(f){actions.add(f);return ()=>actions.delete(f);},
-  destroy(){if(dead)return;dead=true;for(const id of [...records.keys()])remove(id);observer.disconnect();reduced.removeEventListener('change',motionChange);target.removeEventListener('click',click);target.removeEventListener('contextmenu',context);actions.clear();current=null;}
+  destroy(){if(dead)return;dead=true;for(const id of [...records.keys()])remove(id);setAnchorHost(false);observer.disconnect();reduced.removeEventListener('change',motionChange);target.removeEventListener('click',click);target.removeEventListener('contextmenu',context);actions.clear();current=null;}
  };
 }

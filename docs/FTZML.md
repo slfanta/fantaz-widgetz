@@ -46,9 +46,14 @@ Library 0.3.2 draws the flat two-color switch as an SVG.
         onColor="#b54d29" offColor="#42414a"/>
 ```
 
-The shared widget `size`/`position` map to width/height/x/y attributes on all
-elements. Supply width and height together, and x and y together, as integer
-pixels. Explicit switch dimensions size the button and SVG viewport. The SVG
+All widgets accept `anchor` together with the shared geometry attributes.
+`width` and `height` map to `size` and must be supplied together. `x` and `y`
+map to `position`. Without an anchor use both coordinates for absolute placement.
+With an anchor, omitted offsets default to zero. Geometry uses integer CSS pixels.
+For a centered row use `<row id="header" anchor="center" width="123" height="20">`.
+See the [nine anchor names and placement rules](API.md#types).
+
+Explicit switch dimensions size the button and SVG viewport. The SVG
 keeps its proportions. Omit geometry for normal layout and a centered 20.8x10.4 CSS-pixel SVG
 in the 34x20 desktop button.
 

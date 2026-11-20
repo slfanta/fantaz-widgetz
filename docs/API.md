@@ -1,4 +1,4 @@
-# Public API 0.3.2
+# Public API 0.4.0
 
 The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-purpose framework. It can be consumed as a small TypeScript library plus optional Rust/Tauri adapter. Style consistency takes priority over freedom.
 
@@ -19,7 +19,24 @@ The notification template's desktop size is 284 × 64 logical px. A 1 px frame a
 
 ## Types
 
-All elements need a unique `id` (letter then up to 63 letters/digits/underscores/hyphens). Every type inherits optional `size: {width,height}` and `position: {x,y}` from `Widget`. Dimensions are integer pixels 1–4096; coordinates are integer pixels within ±8192, absolute in the containing pad/row/column. Omit geometry for normal layout.
+All elements need a unique `id` (letter then up to 63 letters/digits/underscores/hyphens). Every type inherits optional `size: {width,height}`, `position: {x,y}`, and `anchor` from `Widget`. Sizes are integer CSS pixels from 1 to 4096. Coordinates are integer CSS pixels within ±8192. Omit positioning and anchoring to use normal flow.
+
+| | Left | Center | Right |
+|---|---|---|---|
+| Upper | `upper-left` | `upper-center` | `upper-right` |
+| Middle | `center-left` | `center` | `center-right` |
+| Lower | `lower-left` | `lower-center` | `lower-right` |
+
+An anchor aligns the matching points of the widget and its container. A pad
+uses its mount element. All other widgets use their parent layout, inside the
+pad's padding where applicable. Anchored widgets sit outside normal flow.
+Add `position` for offsets in CSS pixels, positive right and down. Existing
+`position` values without an anchor still use absolute coordinates.
+
+For a compact row that follows the window height, use `anchor: 'center'` on
+the row. Widgetz paints the pad frame one CSS pixel inside the outer box to
+keep all four edges visible through fractional WebView rounding. The inset is
+automatic. The host still supplies enough room for the intended contents.
 
 Optional `opacity` applies to every type except switch: integer 1–10, with 1=0%, 10=100%, `(n-1)/9` in between. Parent compositing attenuates children. Colors are `#RRGGBB` only.
 

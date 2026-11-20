@@ -1,6 +1,6 @@
 # Fantaz Widgetz on/off control
 
-Library and demo 0.3.2, 2026-11-20 (Asia/Taipei). This is a reusable
+Library and demo 0.4.0, 2026-11-20 (Asia/Taipei). This is a reusable
 Fantaz Widgetz control. It has no dependency on a downloader, routing app,
 website, server, registry setting or other project's state.
 

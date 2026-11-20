@@ -5,10 +5,10 @@ host project and treat Widgetz as read-only. Changes to Fantaz Widgetz itself
 require explicit user authorization for the task. [Agent roles](../AGENTS.md)
 
 Use `@fantaz/widgetz` to render a compact pad inside a browser or WebView. In the
-host project, install the local 0.3.2 package. Adjust the path for your checkout.
+host project, install the local 0.4.0 package. Adjust the path for your checkout.
 
 ```sh
-npm install C:/projs/fantaz-widgetz/releases/fantaz-widgetz-0.3.2.tgz
+npm install C:/projs/fantaz-widgetz/releases/fantaz-widgetz-0.4.0.tgz
 ```
 
 Give the pad a mount element with room for its contents.
@@ -50,8 +50,9 @@ render();
 ```
 
 - **Layout.** Compose one `pad` from rows, columns and controls with unique IDs.
-  Use the bundled stylesheet. Optional `size` and `position` use CSS pixels.
-  WebView2 applies Windows display scaling automatically. [API](API.md)
+  All widgets support `anchor`, such as `'center'` for a compact floating row.
+  Size and offsets use CSS pixels. Widgetz insets the pad frame automatically.
+  WebView2 applies Windows display scaling. [API](API.md)
 - **Switch.** Set `state` from the host. For custom colors, use `onColor` and
   `offColor`. Widgetz derives the circle and hover fills. [Switch guide](ON_OFF_CONTROL.md)
 - **Saved layouts.** Load with `view.load(parseFTZML(xml))` and save with

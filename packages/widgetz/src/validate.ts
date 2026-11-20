@@ -1,5 +1,6 @@
 import type {Design,Motion,Node,Pad,Palette} from './types.js';
-const common=['id','type','opacity','size','position'];
+import {widgetAnchors} from './types.js';
+const common=['id','type','opacity','size','position','anchor'];
 const fields:Record<string,string[]>={pad:['children','palette'],row:['children'],column:['children'],text:['content','color','role','align','wrap','overflow'],icon:['source','color','label','iconSize'],led:['state','color','label'],divider:[],progress:['value','color','label'],button:['action','label','text','icon','color','textSize','wrap','align','disabled'],switch:['action','label','state','disabled','onColor','offColor']};
 const paletteKeys: (keyof Palette)[]=['surface','text','muted','accent','success','failure','warning','border','divider'];
 export function fail(message:string):never {throw new Error(`Fantaz Widgetz: ${message}`);}
@@ -7,10 +8,18 @@ function object(v:unknown,label:string):Record<string,unknown>{if(!v||typeof v!=
 function keys(v:Record<string,unknown>,allowed:string[],label:string){for(const k of Object.keys(v))if(!allowed.includes(k))fail(`${label}: unsupported '${k}'`);}
 function geometry(n:Record<string,unknown>){
  if(n.size!==undefined){const size=object(n.size,'size');keys(size,['width','height'],'size');for(const key of ['width','height'])if(!Number.isInteger(size[key])||Number(size[key])<1||Number(size[key])>4096)fail('size width/height must be integer pixels from 1 to 4096');}
- if(n.position!==undefined){const position=object(n.position,'position');keys(position,['x','y'],'position');for(const key of ['x','y'])if(!Number.isInteger(position[key])||Math.abs(Number(position[key]))>8192)fail('position x/y must be integer pixels within +/-8192');}
+ if(n.anchor!==undefined)choice(n.anchor,widgetAnchors,'anchor');
+ if(n.position!==undefined){
+  const position=object(n.position,'position');
+  keys(position,['x','y'],'position');
+  for(const key of ['x','y']){
+   const offset=position[key];
+   if(!Number.isInteger(offset)||Math.abs(Number(offset))>8192)fail('position x/y must be integer pixels within +/-8192');
+  }
+ }
 }
 function text(v:unknown,label:string,max=4096){if(typeof v!=='string'||v.length>max)fail(`${label} must be text of at most ${max} characters`);if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/.test(v))fail(`${label} contains characters not representable in XML 1.0`);}
-function choice(v:unknown,values:unknown[],label:string){if(!values.includes(v))fail(`${label} must be ${values.join(' / ')}`);}
+function choice(v:unknown,values:readonly unknown[],label:string){if(!values.includes(v))fail(`${label} must be ${values.join(' / ')}`);}
 export function opacity(v:unknown){if(!Number.isInteger(v)||Number(v)<1||Number(v)>10)fail('opacity must be an integer 1–10');return (Number(v)-1)/9;}
 export function color(v:unknown):asserts v is `#${string}` {if(typeof v!=='string'||!/^#[0-9a-f]{6}$/i.test(v))fail('color must be #RRGGBB');}
 function source(v:unknown){const s=object(v,'icon source');keys(s,['glyph','image'],'icon source');if('glyph'in s&&'image'in s)fail('choose glyph OR image');if('glyph'in s)choice(s.glyph,['app','download','check','fail','close','info'],'glyph');else {
@@ -25,7 +34,7 @@ export function validatePad(value:unknown):asserts value is Pad {
  function walk(input:unknown,depth:number,root=false){
   const n=object(input,'element');const t=String(n.type);
   if(!Object.hasOwn(fields,t))fail(`unknown element '${t}'`);if(++count>64||depth>8)fail('design exceeds 64 elements or 8 layout levels');
-  keys(n,[...(t==='switch'?['id','type','size','position']:common),...fields[t]],t);geometry(n);if(root?t!=='pad':t==='pad')fail('exactly one outer pad is required');
+  keys(n,[...(t==='switch'?['id','type','size','position','anchor']:common),...fields[t]],t);geometry(n);if(root?t!=='pad':t==='pad')fail('exactly one outer pad is required');
   if(typeof n.id!=='string'||!(/^[a-z][a-z0-9_-]{0,63}$/i.test(n.id)))fail('id must start with a letter, max 64 letters/digits/_/-');
   if(ids.has(n.id))fail(`duplicate id '${n.id}'`);ids.add(n.id);
   if(n.opacity!==undefined)opacity(n.opacity);if(n.color!==undefined)color(n.color);

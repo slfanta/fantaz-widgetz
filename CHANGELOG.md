@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-11-20
+
+- Add nine positioning anchors as an inherited `Widget` property and FTZML
+  attribute. Centered layouts follow the available container size.
+- Paint the pad frame one CSS pixel inside its bounds so it survives fractional
+  WebView edge clipping without per-design adjustments.
+
 ## Guide revision - 2026-11-20
 
 - Add a short agent quick start for Widgetz 0.3.2 with a working switch example.

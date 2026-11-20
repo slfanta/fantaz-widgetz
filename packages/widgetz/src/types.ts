@@ -7,9 +7,15 @@ export type Align = 'start'|'center'|'end';
 export interface Palette {surface:Color; text:Color; muted:Color; accent:Color; success:Color; failure:Color; warning:Color; border:Color; divider:Color}
 export const palette: Readonly<Palette> = Object.freeze({surface:'#171b2a',text:'#e7eef9',muted:'#b9c5d9',accent:'#ad94ff',success:'#83e6ae',failure:'#f1a7b3',warning:'#e6c36a',border:'#665691',divider:'#38364a'});
 export interface WidgetSize {width:number; height:number}
+export const widgetAnchors = [
+  'upper-left', 'upper-center', 'upper-right',
+  'center-left', 'center', 'center-right',
+  'lower-left', 'lower-center', 'lower-right',
+] as const;
+export type WidgetAnchor = typeof widgetAnchors[number];
 export interface WidgetPosition {x:number; y:number}
 /** Optional integer-pixel geometry, inherited by every widget. Layout owns omitted geometry. */
-export interface Widget {id:string; size?:WidgetSize; position?:WidgetPosition}
+export interface Widget {id:string; size?:WidgetSize; position?:WidgetPosition; anchor?:WidgetAnchor}
 interface Base extends Widget {opacity?:Opacity}
 export interface Pad extends Base {type:'pad'; children:Element[]; palette?:Partial<Palette>}
 export interface Row extends Base {type:'row'; children:Element[]}
