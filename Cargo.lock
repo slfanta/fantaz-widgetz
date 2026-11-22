@@ -786,7 +786,7 @@ dependencies = [
 
 [[package]]
 name = "fantaz-widgetz-demo"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "serde",
  "tauri",
@@ -4118,14 +4118,14 @@ dependencies = [
 
 [[package]]
 name = "widgetz-core"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "widgetz-tauri"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "serde",
  "tauri",

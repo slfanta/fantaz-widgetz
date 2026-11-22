@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0 - 2026-11-22
+
+- Load a design directly with `view.loadFTZML(xml)`. Widgetz installs its fixed
+  styles. Remove the `@fantaz/widgetz/style.css` import when upgrading.
+- Draw the LED as an SVG circle that scales proportionally inside its box.
+  On glows and off is unlit.
+- Share foreground color and opacity across the widget model, with container
+  foreground inheritance and the switch's existing state colors.
+- Document child layout and ship a readable monitor example with a progress bar.
+
 ## 0.5.0 - 2026-11-20
 
 - Add `enableWindowDrag` to the optional Tauri frontend entry point. It hands

@@ -1,8 +1,9 @@
 # Fantaz Widgetz
 
-A tiny, style-predetermined widget vocabulary. Compact desktop pads and in-app widgets, with an optional **Tauri 2** corner-notification adapter. No UI component runtime, font choices, rounded panels, or application-specific branding.
+A small widget library for compact desktop pads and in-app widgets. Write the layout, colors, and controls in one FTZML file. Widgetz supplies the fixed appearance automatically, including when used with the optional Tauri 2 adapter.
 
 Install the library, mount a pad, and wire up actions with the [agent quick start](docs/QUICK_START.md).
+Download the library and Windows demo from [GitHub Releases](https://github.com/slfanta/fantaz-widgetz/releases).
 For a movable desktop pad, use `enableWindowDrag` from `@fantaz/widgetz/tauri`.
 See the [Tauri setup](docs/INTEGRATION.md#draggable-tauri-pads).
 
@@ -39,16 +40,22 @@ Ten elements: **pad, row, column, text, icon, LED, divider, progress, button, sw
 
 Opacity is an integer **1–10**: **1 = 0%**, **10 = 100%**, equal steps `(level - 1) / 9`. Parent opacity composites all descendants; child opacity multiplies it. Use one level on the pad unless deliberately attenuating a child.
 
-```ts
-import { mount, downloadNotice } from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
-const view = mount(document.querySelector('#widget')!);
-view.update(downloadNotice({
-  id: 'job-42', outcome: 'success', title: 'example-video.mp4',
-  detail: 'Saved to Downloads', appName: 'Your app',
-}, { icon: { glyph: 'download' }, opacity: 10 }));
-view.onAction(action => { if (action === 'dismiss') view.destroy(); });
+```xml
+<ftzml version="1">
+  <pad id="monitor">
+    <row id="status">
+      <led id="activity" state="on" label="Downloading"/>
+      <text id="speed">1.7 MB/s · 621 / 810</text>
+    </row>
+    <progress id="download" value="0.77" label="Download progress" color="#ffc840"/>
+  </pad>
+</ftzml>
 ```
+
+Load your file with `mount(element).loadFTZML(xmlText)`. A pad, row, or column
+can contain children. Children move with their parent and can anchor to one of
+nine points within it. The host updates live values and handles action IDs.
+See the [full monitor example](public/templates/connection-monitor.ftzml).
 
 The project-neutral notification template uses two rows. Its desktop host is **284 × 64 logical px**, bottom-right inside the work area, topmost, no taskbar button, no focus stealing, no OS toast. Close `[x]` or timeout dismisses it. Hover/focus holds the timeout. Success lasts 8 seconds; failure 12. One visible pad, bounded FIFO queue, delivery acknowledgment and no idle polling.
 

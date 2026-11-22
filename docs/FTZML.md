@@ -2,6 +2,10 @@
 
 **Fantaz Widgetz Markup Language** is the deliberately small XML save/share format for Fantaz designs. Extension `.ftzml`, UTF-8, versioned root. No visual editor is included. Parse and serialize are implemented, not just a proposed format.
 
+Use `mount(element).loadFTZML(xmlText)` to load the file. The renderer supplies
+the fixed appearance. Keep the layout, palette, and limited element properties
+in the same FTZML file.
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <ftzml version="1">
@@ -22,6 +26,16 @@
 ```
 
 One optional `<palette>` alongside the single outer `<pad>` accepts the nine [API palette keys](API.md). Palette attributes apply to that pad. Ten element names match the API; structural elements contain children, `<text>` contains only literal text and all other elements are empty. Icon sources flatten to `glyph="download"` or `image="./app.png"`. Button icon sources use the same attributes. Numbers and booleans are explicit (`true`/`false`); opacity must be an integer 1–10. Button `textSize` is the only label-size option. `disabled` is supported.
+
+Pad, row, and column contain children. Your indentation shows the parent of
+each element. A child moves with its parent and keeps its own dimensions.
+Set `color` on a container to supply a shared foreground and set `opacity`
+to fade its whole subtree. Switch fills use `onColor` and `offColor`.
+
+An LED has `state="on"` for a glowing circle or `state="off"` for a dim unlit
+circle, plus its accessible `label`. It fits concentrically inside its
+`width` and `height`. A progress bar takes a `value` from `0` to `1`, an
+accessible `label`, and can use `color` for its fill.
 
 Optional sibling animation elements:
 

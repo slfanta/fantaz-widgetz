@@ -1,12 +1,15 @@
 {
   "name": "@fantaz/widgetz",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
-  "sideEffects": [
-    "*.css"
-  ],
   "files": [
-    "dist"
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/LICENSE",
+    "dist/README.md",
+    "dist/ON_OFF_CONTROL.md",
+    "dist/docs",
+    "dist/public/templates/connection-monitor.ftzml"
   ],
   "exports": {
     ".": {
@@ -16,8 +19,7 @@
     "./tauri": {
       "types": "./dist/tauri.d.ts",
       "import": "./dist/tauri.js"
-    },
-    "./style.css": "./dist/style.css"
+    }
   },
   "peerDependencies": {
     "@tauri-apps/api": "^2.0.0"

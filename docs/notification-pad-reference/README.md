@@ -74,7 +74,6 @@ Do not add per-consumer CSS for padding, borders, fonts or rounded corners.
 
 ```ts
 import {mount} from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
 import {createResultPad} from './create-result-pad';
 
 const view = mount(document.getElementById('notice-root')!);
@@ -91,6 +90,8 @@ view.onAction(action => {
 `hostDismissCurrentNotice` is a placeholder for the consuming app's own method,
 not a Fantaz export. Bundlers may emit an absolute same-origin asset URL; pass
 its local pathname (or an allowed bounded raster data URL), not a remote URL.
+Widgetz 0.6 and later apply the fixed style automatically. When using the
+original 0.1 package, import `@fantaz/widgetz/style.css`.
 
 For a saved design, read bundled XML text, then:
 
@@ -163,7 +164,7 @@ frame/spacing, `[x]`, no taskbar item/focus theft, hover past expiry, resumed
 expiry, queue order/stale IDs, show failures, reduced motion and teardown.
 Use generated/disposable results, never mark a live entry Downloaded to test UI.
 
-The toolkit fixes shape/spacing in [style.css](../../packages/widgetz/src/style.css),
+The toolkit fixes shape/spacing in [styles.ts](../../packages/widgetz/src/styles.ts),
 models/API in [types.ts](../../packages/widgetz/src/types.ts) and
 [templates.ts](../../packages/widgetz/src/templates.ts), FTZML in
 [ftzml.ts](../../packages/widgetz/src/ftzml.ts). General docs:

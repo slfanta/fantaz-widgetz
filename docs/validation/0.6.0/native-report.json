@@ -1,0 +1,79 @@
+{
+  "version": "0.6.0",
+  "native": true,
+  "windowDrag": {
+    "scale": 1.25,
+    "startPhysical": [
+      252,
+      192
+    ],
+    "belowThresholdPhysical": [
+      252,
+      192
+    ],
+    "samplesPhysical": [
+      [
+        272,
+        192
+      ],
+      [
+        302,
+        192
+      ],
+      [
+        342,
+        192
+      ],
+      [
+        382,
+        192
+      ]
+    ],
+    "expectedDxPhysical": [
+      20,
+      50,
+      90,
+      130
+    ],
+    "finalPhysical": [
+      382,
+      192
+    ],
+    "nativeStarts": 1
+  },
+  "noticeDragDenied": true,
+  "flatSwitchMouseKeyboard": true,
+  "switchGeometry": {
+    "width": 20.80000114440918,
+    "height": 10.40000057220459,
+    "devicePixelRatio": 1.25
+  },
+  "switchBorderlessOnFocus": true,
+  "isolatedProfile": "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795343648744",
+  "pad": {
+    "title": "Fantaz Widgetz notification",
+    "visible": true,
+    "noActivate": true,
+    "toolWindow": true,
+    "appWindow": false,
+    "topmost": true,
+    "rect": [
+      1752,
+      1076,
+      284,
+      64
+    ],
+    "foreground": false
+  },
+  "successAndFailureDisplayed": true,
+  "stableDedup": true,
+  "fifoAndStaleIdProtection": true,
+  "hoverHoldPreservesRemaining": true,
+  "closeButtonHandlerWorks": true,
+  "autoDismissAfterAck": true,
+  "mainCannotUseNoticeCommands": true,
+  "oneReusedNoticeWindow": true,
+  "productionTestHooksAbsent": true,
+  "noDownloaderModified": true,
+  "gracefulExit": true
+}

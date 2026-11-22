@@ -1,0 +1,87 @@
+const fixedStyles = `
+/* Fantaz geometry is intentionally not a consumer configuration surface. */
+.fw-pad,.fw-pad *{box-sizing:border-box;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;font-weight:400;font-synthesis:none}
+.fw-pad {
+  --fw-surface:#171b2a;--fw-text:#e7eef9;--fw-muted:#b9c5d9;--fw-accent:#ad94ff;
+  --fw-success:#83e6ae;--fw-failure:#f1a7b3;--fw-warning:#e6c36a;--fw-border:#665691;--fw-divider:#38364a;
+  position:relative;display:flex;flex-direction:column;justify-content:safe center;gap:4px;
+  width:100%;height:100%;max-width:100%;max-height:100%;min-width:0;overflow:clip;
+  padding:4px;border:1px solid transparent;border-radius:0;
+  background:var(--fw-surface);background-clip:padding-box;
+  color:var(--fw-foreground,var(--fw-text));font-size:12px;line-height:18px;color-scheme:dark;isolation:isolate;
+}
+/* Paint the frame inside the viewport so WebView rounding cannot clip its far edges. */
+.fw-pad::after {
+  content:'';position:absolute;inset:0;border:1px solid var(--fw-border);z-index:1;pointer-events:none;
+}
+:where(.fw-anchor-host){position:relative}
+[data-fw-anchored] {
+  --fw-anchor-inset:0px;
+  max-width:max(0px,calc(100% - 2 * var(--fw-anchor-inset)));
+  max-height:max(0px,calc(100% - 2 * var(--fw-anchor-inset)));
+}
+.fw-pad > [data-fw-anchored]{--fw-anchor-inset:4px}
+.fw-row{position:relative;display:flex;align-items:center;gap:4px;min-width:0;flex-shrink:0;min-height:18px}.fw-column{position:relative;display:flex;flex-direction:column;gap:4px;min-width:0}.fw-row>.fw-text,.fw-row>.fw-column{flex:1;min-width:0}
+.fw-text{color:var(--fw-foreground,var(--fw-text));min-width:0;overflow:hidden;scrollbar-width:none;outline-offset:-1px}.fw-text::-webkit-scrollbar{display:none}.fw-text:focus-visible,.fw-button:focus-visible{outline:1px solid var(--fw-accent);outline-offset:-1px}
+.fw-text[data-role=secondary]{font-size:11px;line-height:16px;color:var(--fw-foreground,var(--fw-muted))}.fw-text[data-wrap=true]{overflow-wrap:anywhere;white-space:normal}.fw-track{display:flex;width:max-content;gap:24px;align-items:center}.fw-run,.fw-copy{white-space:nowrap;flex:none}.fw-copy[hidden]{display:none}.fw-text[data-wrap=true]>.fw-track{display:block;width:auto}.fw-text[data-wrap=true] .fw-run{white-space:normal}.fw-text[data-align=center]{text-align:center}.fw-text[data-align=end]{text-align:right}.fw-text[data-overflow=clip]>.fw-track,.fw-text[data-rolling=false]>.fw-track{width:100%;display:block}.fw-text[data-overflow=clip] .fw-run{display:block;overflow:hidden;text-overflow:ellipsis}
+.fw-icon{width:16px;height:16px;flex:0 0 16px;display:inline-flex;align-items:center;justify-content:center;color:var(--fw-foreground,var(--fw-accent));pointer-events:none}.fw-icon svg,.fw-icon img{width:16px;height:16px;display:block;object-fit:contain}.fw-icon svg{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter}
+.fw-led {
+  width:6px;height:6px;flex:0 0 6px;margin:0 2px;
+  color:var(--fw-foreground,var(--fw-success));
+}
+.fw-led svg {display:block;width:100%;height:100%;overflow:visible}
+.fw-led circle {fill:currentColor;filter:drop-shadow(0 0 2px currentColor)}
+.fw-led[data-state=off] circle {fill:var(--fw-muted);fill-opacity:.4;filter:none}
+.fw-divider{height:1px;min-height:1px;flex:none;color:var(--fw-foreground,var(--fw-divider));background:currentColor}.fw-progress{height:3px;min-height:3px;width:100%;background:var(--fw-divider);color:var(--fw-foreground,var(--fw-accent));overflow:hidden;flex:none}.fw-progress-fill{height:3px;width:100%;background:currentColor;transform-origin:left;transform:scaleX(0)}
+.fw-button{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:20px;min-height:20px;max-width:100%;padding:0 4px;border:1px solid var(--fw-divider);border-radius:0;background:transparent;color:var(--fw-foreground,var(--fw-text));font-size:12px;line-height:18px;cursor:default;flex-shrink:0;overflow:hidden}.fw-button:hover{border-color:var(--fw-accent);background:color-mix(in srgb,var(--fw-accent) 9%,transparent)}.fw-button:active{background:color-mix(in srgb,var(--fw-accent) 16%,transparent)}.fw-button:disabled{opacity:.5}.fw-button-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fw-button[data-wrap=true] .fw-button-label{white-space:normal;overflow-wrap:anywhere}.fw-button[data-align=start]{justify-content:flex-start;text-align:left}.fw-button[data-align=end]{justify-content:flex-end;text-align:right}.fw-button .fw-icon{color:inherit;width:12px;height:12px;flex-basis:12px}.fw-button .fw-icon svg,.fw-button .fw-icon img{width:12px;height:12px}
+@media(prefers-reduced-motion:reduce){.fw-text[data-overflow=roll]{overflow-x:auto}.fw-copy{display:none!important}}
+@media(pointer:coarse){.fw-button{min-width:44px;min-height:44px}}
+
+/* Flat vector switch with centered artwork and a separate click target. */
+.fw-icon[data-size="20"]{width:20px;height:20px;flex-basis:20px}.fw-icon[data-size="20"]>img,.fw-icon[data-size="20"]>svg{width:20px;height:20px}
+.fw-switch {
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  width:34px;
+  height:20px;
+  padding:0;
+  border:0;
+  outline:none;
+  background:transparent;
+  box-shadow:none;
+}
+.fw-switch-rail {
+  display:block;
+  flex:none;
+  width:20.8px;
+  height:10.4px;
+  pointer-events:none;
+}
+.fw-switch-track{fill:var(--fw-switch-track)}.fw-switch-thumb{fill:var(--fw-switch-circle)}
+.fw-switch:hover:not(:disabled) .fw-switch-track{fill:var(--fw-switch-hover)}
+.fw-switch:focus-visible .fw-switch-thumb{fill:var(--fw-switch-focus)}
+@media(pointer:coarse){.fw-switch{min-width:44px;min-height:44px}}
+`;
+
+const installed = new WeakSet<Document>();
+
+/** Widgetz owns its fixed presentation and installs it once per document. */
+export function installStyles(target: HTMLElement) {
+  const document = target.ownerDocument;
+  if (installed.has(document)) return;
+
+  const Sheet = document.defaultView?.CSSStyleSheet;
+  if (Sheet && 'replaceSync' in Sheet.prototype && 'adoptedStyleSheets' in document) {
+    const stylesheet = new Sheet();
+    stylesheet.replaceSync(fixedStyles);
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, stylesheet];
+  } else {
+    const style = document.createElement('style');
+    style.textContent = fixedStyles;
+    document.head.append(style);
+  }
+  installed.add(document);
+}

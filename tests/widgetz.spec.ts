@@ -30,7 +30,7 @@ test('unknown style/font/padding/HTML hooks are rejected atomically',async({page
  for(const extra of [{padding:12},{font:'Arial'},{className:'free'},{style:{color:'red'}},{html:'<script>bad</script>'}]){
   const error=await api(page,({extra}:any)=>{try{(window as any).fantazTest.view.update({type:'pad',id:'root',children:[],...extra});return '';}catch(e){return String(e);}},{extra});expect(error).toContain('unsupported');
  }
- await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.5.0');
+ await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('Fantaz Widgetz · 0.6.0');
 });
 test('text uses literal content and unsafe images/colors are rejected',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.setText('brand-label','<img src=x onerror=alert(1)>');const errors=[];for(const n of [{type:'icon',id:'icon',source:{image:'https://example.com/photo.png'}},{type:'text',id:'text',content:'ok',color:'url(evil)'},{type:'icon',id:'icon',source:{image:'data:image/svg+xml,<svg/>'}}]){try{f.view.update({type:'pad',id:'root',children:[n]});}catch(e){errors.push(String(e));}}return {errors,images:document.querySelectorAll('img').length};});expect(result.errors).toHaveLength(3);expect(result.images).toBe(0);await expect(page.locator('[data-ftz-id="brand-label"] .fw-run')).toHaveText('<img src=x onerror=alert(1)>');
@@ -38,6 +38,60 @@ test('text uses literal content and unsafe images/colors are rejected',async({pa
 test('opacity mapping and inherited subtree compositing are explicit',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.update({type:'pad',id:'root',opacity:8,children:[{type:'text',id:'label',content:'Muted',opacity:5}]});return [getComputedStyle(document.querySelector('.fw-pad')!).opacity,getComputedStyle(document.querySelector('.fw-text')!).opacity];});expect(Number(result[0])).toBeCloseTo(7/9,5);expect(Number(result[1])).toBeCloseTo(4/9,5);
  for(const opacity of [0,11,4.5])expect(await api(page,(opacity:any)=>{try{(window as any).fantazTest.view.update({type:'pad',id:'root',opacity,children:[]});return '';}catch(e){return String(e);}},opacity)).toContain('integer');
+});
+
+test('FTZML renders a round LED, nested geometry and progress without a stylesheet import', async ({page}) => {
+ const result = await page.evaluate(async () => {
+  const {view, parseFTZML, saveFTZML} = (window as any).fantazTest;
+  const monitor = await fetch('/templates/connection-monitor.ftzml').then(response => response.text());
+  view.loadFTZML(monitor);
+  const progress = document.querySelector<HTMLElement>('.fw-progress')!;
+  const rail = progress.querySelector('.fw-progress-fill')!;
+  const fraction = rail.getBoundingClientRect().width / progress.getBoundingClientRect().width;
+  const railHeight = progress.getBoundingClientRect().height;
+
+  const xml = `<ftzml version="1">
+    <pad id="root" color="#abcdef" opacity="9">
+      <row id="group" anchor="center" width="100" height="60" x="8">
+        <led id="activity" state="on" label="Activity" anchor="center" width="28" height="12" opacity="7"/>
+      </row>
+    </pad>
+  </ftzml>`;
+  view.loadFTZML(xml);
+  const pad = document.querySelector('.fw-pad')!;
+  const row = document.querySelector('.fw-row')!;
+  const led = document.querySelector('.fw-led')!;
+  const circle = led.querySelector('svg circle')!;
+  const geometry = () => {
+   const group = row.getBoundingClientRect(), box = led.getBoundingClientRect();
+   const mark = circle.getBoundingClientRect();
+   const center = (r: DOMRect) => [r.x + r.width / 2, r.y + r.height / 2];
+   return {
+    box: [box.width, box.height], circle: [mark.width, mark.height],
+    centeredInParent: String(center(group)) === String(center(mark)),
+    offset: center(group)[0] - center(pad.getBoundingClientRect())[0],
+   };
+  };
+  const on = { geometry: geometry(), fill: getComputedStyle(circle).fill, filter: getComputedStyle(circle).filter };
+  const roundTrip = parseFTZML(saveFTZML(view.design())).pad;
+  const design = view.design();
+  Object.assign(design.pad.children[0].children[0], { state: 'off', size: {width: 10, height: 20} });
+  view.update(design.pad);
+  return {
+   railHeight, fraction, on, roundTrip,
+   off: {geometry: geometry(), filter: getComputedStyle(circle).filter, sameCircle: circle === led.querySelector('circle')},
+   opacity: [getComputedStyle(pad).opacity, getComputedStyle(led).opacity].map(Number),
+  };
+ });
+ expect(result.railHeight).toBe(3);
+ expect(result.fraction).toBeCloseTo(0.77, 3);
+ expect(result.on.geometry).toEqual({box: [28, 12], circle: [12, 12], centeredInParent: true, offset: 8});
+ expect(result.on.fill).toBe('rgb(171, 205, 239)');
+ expect(result.on.filter).toContain('drop-shadow');
+ expect(result.off).toEqual({geometry: {box: [10, 20], circle: [10, 10], centeredInParent: true, offset: 8}, filter: 'none', sameCircle: true});
+ expect(result.opacity[0]).toBeCloseTo(8/9,5);
+ expect(result.opacity[1]).toBeCloseTo(6/9,5);
+ expect(result.roundTrip).toMatchObject({color: '#abcdef', children: [{position: {x: 8, y: 0}, children: [{state: 'on', size: {width: 28, height: 12}}]}]});
 });
 test('simple animations are linear, replace per property and cancel cleanly',async({page})=>{
  const result=await page.evaluate(()=>{const f=(window as any).fantazTest;f.view.update({type:'pad',id:'root',children:[{type:'text',id:'text',content:'Motion'}]});const a={id:'text',property:'x',from:0,to:-40,durationMs:6000};f.view.animate(a);const cancel=f.view.animate({...a,to:-80});const el=document.querySelector('[data-ftz-id="text"]')!;const all=el.getAnimations({subtree:true});const easing=all[0].effect!.getTiming().easing;cancel();return {count:all.length,easing,after:el.getAnimations({subtree:true}).length};});expect(result).toEqual({count:1,easing:'linear',after:0});

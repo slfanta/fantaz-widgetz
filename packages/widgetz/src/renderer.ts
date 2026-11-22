@@ -1,6 +1,8 @@
 import type {Design,IconSource,Motion,Node,Pad} from './types.js';
 import {color,fail,opacity,validateDesign,validateMotion,validatePad} from './validate.js';
 import {paintSwitch,switchGraphic} from './switch.js';
+import {parseFTZML} from './ftzml.js';
+import {installStyles} from './styles.js';
 
 // Trusted bundled vector vocabulary. Consumers never supply SVG markup.
 const paths={app:'M4 19V5h13M4 11h10M8 19v-8',download:'M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4',check:'M4 12l5 5L20 6',fail:'M6 6l12 12M18 6 6 18',close:'M7 7l10 10M17 7 7 17',info:'M12 10v7m0-11v1M4 4h16v16H4z'};
@@ -8,6 +10,7 @@ interface RecordNode {el:HTMLElement; spec:Node; track?:HTMLSpanElement; run?:HT
 export interface WidgetView {
  update(pad:Pad):void;
  load(design:Design):void;
+ loadFTZML(xml:string):void;
  design():Design;
  setText(id:string,content:string):void;
  setIcon(id:string,source:IconSource):void;
@@ -43,6 +46,7 @@ function positionWidget(el: HTMLElement, {position, anchor}: Node) {
  style.alignSelf = anchor.startsWith('upper-') ? 'safe start' : anchor.startsWith('lower-') ? 'safe end' : 'safe center';
 }
 export function mount(target:HTMLElement):WidgetView {
+ installStyles(target);
  const records=new Map<string,RecordNode>();const actions=new Set<(id:string)=>void>();
  const motions=new Map<string,{animation:Animation;motion:Motion}>();
  const declared=new Map<string,Motion>();
@@ -78,6 +82,15 @@ export function mount(target:HTMLElement):WidgetView {
   }
   if(spec.type==='progress'){const fill=document.createElement('div');fill.className='fw-progress-fill';el.append(fill);el.setAttribute('role','progressbar');el.setAttribute('aria-valuemin','0');el.setAttribute('aria-valuemax','100');}
   if(spec.type==='divider')el.setAttribute('role','separator');
+  if(spec.type==='led'){
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+   svg.setAttribute('viewBox','0 0 6 6');
+   svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+   svg.setAttribute('aria-hidden','true');
+   const circle=document.createElementNS(svg.namespaceURI,'circle');
+   circle.setAttribute('cx','3');circle.setAttribute('cy','3');circle.setAttribute('r','3');
+   svg.append(circle);el.append(svg);
+  }
   if(spec.type==='button'||spec.type==='switch')(el as HTMLButtonElement).type='button';
   if(spec.type==='switch')el.append(switchGraphic());
   return r;
@@ -92,6 +105,10 @@ export function mount(target:HTMLElement):WidgetView {
   if(fresh||oldOpacity!==nextOpacity){stopMotion(s.id+':opacity');r.el.style.opacity=nextOpacity===undefined?'':String(opacity(nextOpacity));}
   const newColor='color'in s?s.color:undefined;const oldColor='color'in old?old.color:undefined;
   if(fresh||newColor!==oldColor){stopMotion(s.id+':color');r.el.style.color=newColor||'';}
+  if('children' in s){
+   if(newColor)r.el.style.setProperty('--fw-foreground',newColor);
+   else r.el.style.removeProperty('--fw-foreground');
+  }
   if(s.type==='pad')for(const [k,v]of Object.entries({...{surface:'#171b2a',text:'#e7eef9',muted:'#b9c5d9',accent:'#ad94ff',success:'#83e6ae',failure:'#f1a7b3',warning:'#e6c36a',border:'#665691',divider:'#38364a'},...s.palette}))r.el.style.setProperty('--fw-'+k,v);
   switch(s.type){
    case 'text':{
@@ -146,9 +163,11 @@ export function mount(target:HTMLElement):WidgetView {
  const context=(e:Event)=>e.preventDefault();
  const motionChange=()=>{for(const key of [...motions.keys()])stopMotion(key,false);if(!reduced.matches)for(const m of [...declared.values()])animate(m);for(const r of records.values())measure(r);};
  target.addEventListener('click',click);target.addEventListener('contextmenu',context);reduced.addEventListener('change',motionChange);
+ function load(d:Design){validateDesign(d);for(const key of [...declared.keys()])stopMotion(key);update(d.pad);current=structuredClone(d);for(const m of d.animations||[])animate(m);}
  return {
   update,animate,
-  load(d){validateDesign(d);for(const key of [...declared.keys()])stopMotion(key);update(d.pad);current=structuredClone(d);for(const m of d.animations||[])animate(m);},
+  load,
+  loadFTZML(xml){load(parseFTZML(xml));},
   design(){if(!current)fail('no design loaded');return structuredClone({...current,animations:[...declared.values()]});},
   setText(id,content){mutate(id,n=>{if(n.type!=='text')fail('setText needs text');n.content=content;});},
   setIcon(id,source){mutate(id,n=>{if(n.type!=='icon')fail('setIcon needs icon');n.source=source;});},

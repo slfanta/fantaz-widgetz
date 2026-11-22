@@ -1,4 +1,4 @@
-# Public API 0.5.0
+# Public API 0.6.0
 
 The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-purpose framework. It can be consumed as a small TypeScript library plus optional Rust/Tauri adapter. Style consistency takes priority over freedom.
 
@@ -10,7 +10,7 @@ The **Fantaz Widgetz API** is a constrained visual vocabulary, not a general-pur
 | Row/column | 4 px gaps; rows align centrally, minimum 18 px |
 | Text | Regular system font; normal 12 px / 18 px line, secondary 11 px / 16 px line |
 | Icon | 16 × 16 px; trusted bundled vector or local image |
-| LED | 6 px round light, faint fixed glow; on/off and color |
+| LED | 6 px SVG circle by default, with a faint glow when on. Fits proportionally in its box. |
 | Divider | 1 px line |
 | Progress | 3 px rail, value 0–1 |
 | Button | Square 1 px frame, fixed 4 px horizontal padding, minimum 20 px height, fixed 12 px icon; 44 px minimum touch target on coarse pointers |
@@ -38,28 +38,40 @@ the row. Widgetz paints the pad frame one CSS pixel inside the outer box to
 keep all four edges visible through fractional WebView rounding. The inset is
 automatic. The host still supplies enough room for the intended contents.
 
-Optional `opacity` applies to every type except switch: integer 1–10, with 1=0%, 10=100%, `(n-1)/9` in between. Parent compositing attenuates children. Colors are `#RRGGBB` only.
+Only `pad`, `row`, and `column` contain child elements. A design has one root
+pad. Children move with the parent and resolve their anchors and offsets within
+its layout box. Children choose their own size or use their normal layout size.
 
-| Type | Properties beyond common identity/geometry/opacity |
+`color` and `opacity` are shared by all types except switch. A container's
+`color` sets the default foreground for its descendants. A child's explicit
+color takes precedence. The palette still controls the unlit LED, surfaces,
+and frames. Colors are `#RRGGBB`. Opacity is an integer 1–10, with 1=0%,
+10=100%, and `(n-1)/9` in between. Parent opacity composites the whole subtree.
+The switch uses its two state colors and follows any enclosing opacity.
+
+| Type | Properties beyond shared identity, geometry, color, and opacity |
 |---|---|
 | `pad` | `children`, optional `palette` |
 | `row`, `column` | `children` |
-| `text` | `content`, optional `color`, `role: normal/secondary`, `align: start/center/end`, `wrap`, `overflow: clip/roll` |
-| `icon` | `source: {glyph}` or `{image}`, optional `color`, `label`, `iconSize: 16/20` |
-| `led` | `state: on/off`, `label`, optional `color` |
+| `text` | `content`, optional `role: normal/secondary`, `align: start/center/end`, `wrap`, `overflow: clip/roll` |
+| `icon` | `source: {glyph}` or `{image}`, optional `label`, `iconSize: 16/20` |
+| `led` | `state: on/off` and accessible `label`. On uses the foreground color and glows. Off shows a dim unlit circle. |
 | `divider` | no extra properties |
-| `progress` | `value: 0..1`, `label`, optional `color` |
-| `button` | `action`, accessible `label`, `text` and/or `icon`, optional `color`, `textSize: 11/12/13/14`, `wrap`, `align`, `disabled` |
+| `progress` | `value: 0..1` and accessible `label` |
+| `button` | `action`, accessible `label`, `text` and/or `icon`, optional `textSize: 11/12/13/14`, `wrap`, `align`, `disabled` |
 | `switch` | `state: on/off`, `action`, accessible `label`, optional `disabled`, `onColor`, `offColor`; inherited size/position, no local opacity |
 
-Glyphs: `app`, `download`, `check`, `fail`, `close`, `info`. Images must be bundled relative PNG/JPEG/WebP/SVG files, or bounded raster data URLs. No arbitrary SVG markup or remote requests. Bundled SVGs are displayed as images, never injected into DOM.
+Available glyphs are `app`, `download`, `check`, `fail`, `close`, and `info`.
+Icons and buttons accept bundled local PNG/JPEG/WebP/SVG images or bounded raster
+data URLs. PNG, WebP, and SVG retain their own transparency and colors.
 
 Palette keys: `surface`, `text`, `muted`, `accent`, `success`, `failure`, `warning`, `border`, `divider`. Changing a color does not change shape/geometry. Keep readable foreground/surface contrast when selecting a custom palette.
 
 ## Controller
 
 ```ts
-const view = mount(element);       // empty until update/load
+const view = mount(element);       // installs the fixed presentation
+view.loadFTZML(xmlText);            // validates and loads an FTZML design
 view.update(pad);                  // validates first, keyed reconciliation
 view.load({version:1,pad,animations:[]});
 view.setText('message', 'Saved');

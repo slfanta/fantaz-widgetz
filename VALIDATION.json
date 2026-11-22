@@ -1,11 +1,11 @@
 ﻿{
-    "version":  "0.5.0",
-    "date":  "2026-11-20",
+    "version":  "0.6.0",
+    "date":  "2026-11-22",
     "timezone":  "Asia/Taipei",
     "passed":  true,
     "project":  "Fantaz Widgetz",
-    "previousCheckpoint":  "ae8c1aa",
-    "previousValidation":  "docs/validation/before-0.5.0.json",
+    "previousCheckpoint":  "24e539f",
+    "previousValidation":  "docs/validation/before-0.6.0.json",
     "controlGuide":  "docs/ON_OFF_CONTROL.md",
     "interactiveReference":  "docs/on-off-control/preview.html",
     "control":  {
@@ -69,10 +69,10 @@
                            "frameInsetCssPixels":  1
                        },
     "browserTests":  {
-                         "passed":  29,
+                         "passed":  30,
                          "browser":  "Microsoft Edge via Playwright",
                          "command":  "npm test",
-                         "scope":  "Widget layout, controls, FTZML, lifecycle and the window drag threshold, click handlers, browser no-op and cleanup during a gesture."
+                         "scope":  "Existing widget and native drag gesture coverage plus direct FTZML loading, SVG LED shape and glow, nested anchors, color and opacity, and the 3 CSS pixel progress bar."
                      },
     "rustTests":  {
                       "passed":  6,
@@ -80,36 +80,36 @@
                       "scope":  "Existing FIFO/dedup/backpressure, delivery/hold/expiry and geometry"
                   },
     "clippy":  "passed cargo clippy --workspace --all-targets --locked -- -D warnings",
-    "frontend":  "Strict TypeScript, library and Vite production build. Public exports also loaded from the packed release in a separate consumer.",
+    "frontend":  "Strict TypeScript, library and Vite production build. A separate consumer imported the packed API and verified that the legacy CSS subpath is absent.",
     "native":  {
-                   "version":  "0.5.0",
+                   "version":  "0.6.0",
                    "native":  true,
                    "windowDrag":  {
                                       "scale":  1.25,
                                       "startPhysical":  [
-                                                            92,
-                                                            32
+                                                            252,
+                                                            192
                                                         ],
                                       "belowThresholdPhysical":  [
-                                                                     92,
-                                                                     32
+                                                                     252,
+                                                                     192
                                                                  ],
                                       "samplesPhysical":  [
                                                               [
-                                                                  112,
-                                                                  32
+                                                                  272,
+                                                                  192
                                                               ],
                                                               [
-                                                                  142,
-                                                                  32
+                                                                  302,
+                                                                  192
                                                               ],
                                                               [
-                                                                  182,
-                                                                  32
+                                                                  342,
+                                                                  192
                                                               ],
                                                               [
-                                                                  222,
-                                                                  32
+                                                                  382,
+                                                                  192
                                                               ]
                                                           ],
                                       "expectedDxPhysical":  [
@@ -119,8 +119,8 @@
                                                                  130
                                                              ],
                                       "finalPhysical":  [
-                                                            222,
-                                                            32
+                                                            382,
+                                                            192
                                                         ],
                                       "nativeStarts":  1
                                   },
@@ -132,7 +132,7 @@
                                           "devicePixelRatio":  1.25
                                       },
                    "switchBorderlessOnFocus":  true,
-                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795178128033",
+                   "isolatedProfile":  "C:\\projs\\fantaz-widgetz\\.runtime\\native-profile-1795343648744",
                    "pad":  {
                                "title":  "Fantaz Widgetz notification",
                                "visible":  true,
@@ -167,13 +167,13 @@
                                  "newRuntimeVariants":  0,
                                  "tauriSourceSha256":  "2789687754228f53da3b0d79b9b6530c112b43801d4cbef79c10373f5ece6de7",
                                  "toolchain":  "rustc 1.97.0 (2d8144b78 2026-07-07)\r\nbinary: rustc\r\ncommit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3\r\ncommit-date: 2026-07-07\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.97.0\r\nLLVM version: 22.1.6",
-                                 "lockSha256":  "4344716f1014596394e48fb9d321f79e5e7aa7ec092cbe14db336aa661c0100e"
+                                 "lockSha256":  "2f4719e8b66c485140a58a9788a97430ea790e88f30c275fe0354465bca1991e"
                              },
     "package":  {
-                    "path":  "releases/fantaz-widgetz-0.5.0.tgz",
-                    "bytes":  26677,
-                    "sha256":  "a84e8a9fe569a1e2b2c430c395b024af069fd8593d5e94f6fc7889d37a1af80c",
-                    "unpackedBytes":  82034,
+                    "path":  "releases/fantaz-widgetz-0.6.0.tgz",
+                    "bytes":  32500,
+                    "sha256":  "2670c9c81681b5953818c79909765f80b7549ac354e558a1bc2d7a2f61d9f8bb",
+                    "unpackedBytes":  98748,
                     "guideIncluded":  true,
                     "everyPackedFileMatchesCurrentBuild":  true,
                     "consumerImportVerified":  true
@@ -190,8 +190,8 @@
                     ],
     "quickStart":  {
                        "path":  "docs/QUICK_START.md",
-                       "version":  "0.5.0",
-                       "validation":  "Documents the per-window drag permission and teardown. The packaged guide includes the full Tauri setup."
+                       "version":  "0.6.0",
+                       "validation":  "Documents direct FTZML loading and the packaged progress monitor."
                    },
     "agentRoles":  {
                        "path":  "AGENTS.md",
@@ -207,9 +207,27 @@
                        "thresholdCssPixels":  3,
                        "nativeStartsPerGesture":  1,
                        "notificationDragPermissionDenied":  true,
-                       "nativeReport":  "docs/validation/0.5.0/native-report.json"
+                       "nativeReport":  "docs/validation/0.6.0/native-report.json"
                    },
-    "binary":  "releases/fantaz-widgetz-demo-0.5.0.exe",
-    "binarySha256":  "174fff743e7fe750eeccc50756bb0cdb533a89216bff570327817d3c3929f026",
-    "checkpointTag":  "fantaz-widgetz-v0.5.0-native-window-drag-20261120"
+    "ftzmlDesign":  {
+                        "load":  "view.loadFTZML(xmlText)",
+                        "fixedStyles":  "Installed by mount without a stylesheet import",
+                        "layoutParents":  [
+                                              "pad",
+                                              "row",
+                                              "column"
+                                          ],
+                        "anchorPoints":  9,
+                        "ledDefaultDiameterCssPixels":  6,
+                        "ledShape":  "SVG circle centered and scaled uniformly",
+                        "ledStates":  [
+                                          "on with fixed glow",
+                                          "off without glow"
+                                      ],
+                        "progressDefaultHeightCssPixels":  3,
+                        "example":  "public/templates/connection-monitor.ftzml"
+                    },
+    "binary":  "releases/fantaz-widgetz-demo-0.6.0.exe",
+    "binarySha256":  "dad4821a7cffc11885f8c66a64d8062cca2b5aa2a4a15de2454bcdbb3ec97217",
+    "checkpointTag":  "fantaz-widgetz-v0.6.0-ftzml-design-svg-led-20261122"
 }

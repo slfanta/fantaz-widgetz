@@ -16,16 +16,16 @@ export type WidgetAnchor = typeof widgetAnchors[number];
 export interface WidgetPosition {x:number; y:number}
 /** Optional integer-pixel geometry, inherited by every widget. Layout owns omitted geometry. */
 export interface Widget {id:string; size?:WidgetSize; position?:WidgetPosition; anchor?:WidgetAnchor}
-interface Base extends Widget {opacity?:Opacity}
+interface Base extends Widget {opacity?:Opacity; color?:Color}
 export interface Pad extends Base {type:'pad'; children:Element[]; palette?:Partial<Palette>}
 export interface Row extends Base {type:'row'; children:Element[]}
 export interface Column extends Base {type:'column'; children:Element[]}
-export interface Text extends Base {type:'text'; content:string; color?:Color; role?:'normal'|'secondary'; align?:Align; wrap?:boolean; overflow?:'clip'|'roll'}
-export interface Icon extends Base {type:'icon'; source:IconSource; color?:Color; label?:string; iconSize?:16|20}
-export interface Led extends Base {type:'led'; state:'on'|'off'; color?:Color; label:string}
+export interface Text extends Base {type:'text'; content:string; role?:'normal'|'secondary'; align?:Align; wrap?:boolean; overflow?:'clip'|'roll'}
+export interface Icon extends Base {type:'icon'; source:IconSource; label?:string; iconSize?:16|20}
+export interface Led extends Base {type:'led'; state:'on'|'off'; label:string}
 export interface Divider extends Base {type:'divider'}
-export interface Progress extends Base {type:'progress'; value:number; color?:Color; label:string}
-export interface Button extends Base {type:'button'; action:string; label:string; text?:string; icon?:IconSource; color?:Color; textSize?:11|12|13|14; wrap?:boolean; align?:Align; disabled?:boolean}
+export interface Progress extends Base {type:'progress'; value:number; label:string}
+export interface Button extends Base {type:'button'; action:string; label:string; text?:string; icon?:IconSource; textSize?:11|12|13|14; wrap?:boolean; align?:Align; disabled?:boolean}
 /** The switch adds two state colors to the common widget geometry. */
 export interface Switch extends Widget {type:'switch'; action:string; label:string; state:'on'|'off'; disabled?:boolean; onColor?:Color; offColor?:Color}
 export type Element = Row|Column|Text|Icon|Led|Divider|Progress|Button|Switch;

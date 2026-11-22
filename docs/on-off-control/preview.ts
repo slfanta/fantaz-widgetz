@@ -1,5 +1,4 @@
 import {mount,type Pad} from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
 
 const view=mount(document.querySelector<HTMLElement>('#reference')!);
 let enabled=true;

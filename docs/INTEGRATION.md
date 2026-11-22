@@ -8,7 +8,11 @@ in 0.1.0; this reference does not add a size option or change that default.
 
 ## In-app content (desktop/mobile)
 
-Build the library (`npm run build:library`), then depend on `@fantaz/widgetz` from this workspace or a package created with `npm pack --workspace @fantaz/widgetz`. Import `@fantaz/widgetz/style.css` once. The host gives a mount element a compact width/height; `mount(element)` creates only the predetermined elements inside it. No React/Vue is required. A larger application may use any UI stack outside the widget.
+Install the released `@fantaz/widgetz` archive or build it with `npm run build:library`
+and `npm pack --workspace @fantaz/widgetz`. Give the mount element enough room
+and call `mount(element).loadFTZML(xmlText)`. The renderer installs its fixed
+presentation. When upgrading from 0.5.x, remove the `@fantaz/widgetz/style.css`
+import. The host still controls the mount element dimensions and handles actions.
 
 The renderer works inside a mobile WebView/browser. On coarse pointers controls have a fixed 44 px minimum touch target, so the host must allow a taller pad (at least 88 logical px for the two-row notice); desktop notification dimensions must not be blindly reused for touch layouts. This is in-app content, not an Android/iOS system-wide overlay, background service or mobile OS toast. Native desktop corner adapter code is platform-gated.
 
@@ -61,7 +65,6 @@ Frontend `notice.ts`:
 
 ```ts
 import {connectNotifications} from '@fantaz/widgetz/tauri';
-import '@fantaz/widgetz/style.css';
 const connection = await connectNotifications(document.querySelector('#app')!, {
   icon: {image:'./your-app.png'}, opacity:10,
 });

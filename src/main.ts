@@ -1,10 +1,10 @@
 import {mount,downloadNotice,parseFTZML,saveFTZML,palette,type Design,type DownloadResult,type Opacity,type Pad} from '@fantaz/widgetz';
 import {invoke,isTauri} from '@tauri-apps/api/core';
 import {enableWindowDrag} from '@fantaz/widgetz/tauri';
-import '@fantaz/widgetz/style.css';import './host.css';
+import './host.css';
 const host=document.getElementById('app')!;const view=mount(host);let serial=0;let level:Opacity=10;let preview=false;let controlOn=true;
 function demoPad():Pad{return {type:'pad',id:'demo',children:[
- {type:'row',id:'brand',children:[{type:'icon',id:'brand-icon',source:{glyph:'app'}},{type:'text',id:'brand-label',content:'Fantaz Widgetz · 0.5.0',overflow:'clip'},{type:'button',id:'exit',action:'exit',text:'[x]',label:'Exit demo',textSize:11}]},
+ {type:'row',id:'brand',children:[{type:'icon',id:'brand-icon',source:{glyph:'app'}},{type:'text',id:'brand-label',content:'Fantaz Widgetz · 0.6.0',overflow:'clip'},{type:'button',id:'exit',action:'exit',text:'[x]',label:'Exit demo',textSize:11}]},
  {type:'divider',id:'divider'},
  {type:'text',id:'hint',role:'secondary',content:isTauri()?'Drag the pad body to move the window.':'Two rows. Fixed style. Your content.',wrap:true},
  {type:'row',id:'switch-example',children:[{type:'icon',id:'switch-icon',source:{glyph:'app'}},{type:'text',id:'switch-label',content:'On / off control',overflow:'clip'},{type:'switch',id:'sample-switch',action:'toggle-sample',label:'Example control enabled',state:controlOn?'on':'off',onColor:'#b54d29',offColor:'#42414a'}]},
@@ -26,7 +26,7 @@ view.onAction(action=>{void (async()=>{
  if(action==='burst'){if(isTauri()){for(const ok of [true,false,true])await send(ok);}else await send(false);}
  if(action==='opacity'){level=(level===10?8:level===8?6:10);preview=true;view.update(downloadNotice(sample(true),{opacity:level}));}
  if(action==='ftzml'){
-  const text=await fetch('/templates/download-result.ftzml').then(r=>{if(!r.ok)throw Error('Template not found');return r.text();});const design=parseFTZML(text);const roundtrip=parseFTZML(saveFTZML(design));preview=true;view.load(roundtrip);
+  const text=await fetch('/templates/download-result.ftzml').then(r=>{if(!r.ok)throw Error('Template not found');return r.text();});view.loadFTZML(text);preview=true;
  }
  })().catch(error=>{if(!preview)view.setText('status',String(error));});});
 // Development/testing entry point, tree-shaken from production builds.

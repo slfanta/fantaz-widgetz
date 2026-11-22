@@ -1,7 +1,7 @@
 /** FTZML v1: deliberately tiny XML, exactly the public model, no executable data. */
 import type {Design,Motion,Node,Pad,Palette} from './types.js';
 import {fail,validateDesign} from './validate.js';
-const attrs:Record<string,string[]>={pad:['id','opacity'],row:['id','opacity'],column:['id','opacity'],text:['id','opacity','color','role','align','wrap','overflow'],icon:['id','opacity','color','label','glyph','image','iconSize'],led:['id','opacity','color','label','state'],divider:['id','opacity'],progress:['id','opacity','color','label','value'],button:['id','opacity','color','label','action','text','glyph','image','textSize','wrap','align','disabled'],switch:['id','label','action','state','disabled','onColor','offColor']};
+const attrs:Record<string,string[]>={pad:[],row:[],column:[],text:['role','align','wrap','overflow'],icon:['label','glyph','image','iconSize'],led:['label','state'],divider:[],progress:['label','value'],button:['label','action','text','glyph','image','textSize','wrap','align','disabled'],switch:['label','action','state','disabled','onColor','offColor']};
 const geometryAttrs=['x','y','width','height','anchor'];
 const paletteKeys=['surface','text','muted','accent','success','failure','warning','border','divider'];
 function attributes(el:globalThis.Element,allowed:string[]){const v:Record<string,string>={};for(const a of [...el.attributes]){if(!allowed.includes(a.name))fail(`FTZML <${el.tagName}>: unsupported attribute '${a.name}'`);v[a.name]=a.value;}return v;}
@@ -20,7 +20,8 @@ export function parseFTZML(xml:string):Design {
  let pad:Pad|undefined;let palette:Partial<Palette>|undefined;const animations:Motion[]=[];
  function element(el:globalThis.Element,depth:number):Node {
   if(depth>8)fail('FTZML exceeds 8 layout levels');const type=el.tagName;if(!Object.hasOwn(attrs,type))fail(`FTZML unknown element <${type}>`);
-  const a=attributes(el,[...attrs[type],...geometryAttrs]);const n:Record<string,unknown>={type,...a};
+  const common=type==='switch'?['id']:['id','color','opacity'];
+  const a=attributes(el,[...common,...geometryAttrs,...attrs[type]]);const n:Record<string,unknown>={type,...a};
   if(a.opacity!==undefined)n.opacity=number(a.opacity,'opacity');
   if(type==='pad'||type==='row'||type==='column'){
    for(const child of [...el.childNodes])if(child.nodeType===3&&child.textContent?.trim())fail(`FTZML <${type}> accepts elements only`);

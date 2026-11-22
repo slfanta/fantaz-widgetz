@@ -1,6 +1,5 @@
 /** Browser-only visual preview. No queue, native window or download effects. */
 import {mount} from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
 import './host.css';
 import {createResultPad} from './create-result-pad';
 

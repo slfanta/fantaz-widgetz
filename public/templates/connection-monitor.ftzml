@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ftzml version="1">
-  <pad id="monitor" opacity="10">
+  <palette surface="#1b2026" border="#37373a" accent="#ffc840"/>
+  <pad id="monitor">
     <row id="metrics">
       <icon id="app-icon" glyph="download" label="Example app"/>
-      <text id="rate" overflow="roll">1.09 MB/s · 0 / 223</text>
+      <text id="rate">1.7 MB/s · 621 / 810</text>
     </row>
     <divider id="separator"/>
     <row id="state">
-      <led id="connection" state="on" label="Connected" color="#83e6ae"/>
+      <led id="connection" state="on" label="Connected" color="#39bf88"/>
       <text id="status" role="secondary" overflow="roll">Downloading · example-video.mp4</text>
     </row>
-    <progress id="progress" value="0.42" label="Download progress"/>
+    <progress id="progress" value="0.77" label="Download progress"/>
   </pad>
 </ftzml>

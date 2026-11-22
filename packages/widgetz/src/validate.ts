@@ -1,7 +1,8 @@
 import type {Design,Motion,Node,Pad,Palette} from './types.js';
 import {widgetAnchors} from './types.js';
-const common=['id','type','opacity','size','position','anchor'];
-const fields:Record<string,string[]>={pad:['children','palette'],row:['children'],column:['children'],text:['content','color','role','align','wrap','overflow'],icon:['source','color','label','iconSize'],led:['state','color','label'],divider:[],progress:['value','color','label'],button:['action','label','text','icon','color','textSize','wrap','align','disabled'],switch:['action','label','state','disabled','onColor','offColor']};
+const geometryFields=['id','type','size','position','anchor'];
+const common=[...geometryFields,'color','opacity'];
+const fields:Record<string,string[]>={pad:['children','palette'],row:['children'],column:['children'],text:['content','role','align','wrap','overflow'],icon:['source','label','iconSize'],led:['state','label'],divider:[],progress:['value','label'],button:['action','label','text','icon','textSize','wrap','align','disabled'],switch:['action','label','state','disabled','onColor','offColor']};
 const paletteKeys: (keyof Palette)[]=['surface','text','muted','accent','success','failure','warning','border','divider'];
 export function fail(message:string):never {throw new Error(`Fantaz Widgetz: ${message}`);}
 function object(v:unknown,label:string):Record<string,unknown>{if(!v||typeof v!=='object'||Array.isArray(v))fail(`${label} must be an object`);return v as Record<string,unknown>;}
@@ -34,7 +35,7 @@ export function validatePad(value:unknown):asserts value is Pad {
  function walk(input:unknown,depth:number,root=false){
   const n=object(input,'element');const t=String(n.type);
   if(!Object.hasOwn(fields,t))fail(`unknown element '${t}'`);if(++count>64||depth>8)fail('design exceeds 64 elements or 8 layout levels');
-  keys(n,[...(t==='switch'?['id','type','size','position','anchor']:common),...fields[t]],t);geometry(n);if(root?t!=='pad':t==='pad')fail('exactly one outer pad is required');
+  keys(n,[...(t==='switch'?geometryFields:common),...fields[t]],t);geometry(n);if(root?t!=='pad':t==='pad')fail('exactly one outer pad is required');
   if(typeof n.id!=='string'||!(/^[a-z][a-z0-9_-]{0,63}$/i.test(n.id)))fail('id must start with a letter, max 64 letters/digits/_/-');
   if(ids.has(n.id))fail(`duplicate id '${n.id}'`);ids.add(n.id);
   if(n.opacity!==undefined)opacity(n.opacity);if(n.color!==undefined)color(n.color);
@@ -68,7 +69,7 @@ export function validateMotion(v:unknown,pad:Pad):asserts v is Motion {
  if(!Number.isInteger(m.durationMs)||Number(m.durationMs)<100||Number(m.durationMs)>600000)fail('animation duration must be 100–600000 ms');
  if(m.property==='x'){if(node.type!=='text')fail('x animation requires text');for(const k of ['from','to'])if(typeof m[k]!=='number'||!Number.isFinite(m[k])||Math.abs(Number(m[k]))>8192)fail('text x must be finite, within ±8192 px');}
  if(m.property==='opacity'){if(node.type==='switch')fail('switch appearance supports only inherited size/position and onColor/offColor');opacity(m.from);opacity(m.to);}
- if(m.property==='color'){if(!['text','icon','led','progress','button'].includes(node.type))fail('color animation requires a visible content element');color(m.from);color(m.to);}
+ if(m.property==='color'){if(!['text','icon','led','divider','progress','button'].includes(node.type))fail('color animation requires a visible content element');color(m.from);color(m.to);}
 }
 export function validateDesign(v:unknown):asserts v is Design {
  const d=object(v,'design');keys(d,['version','pad','animations'],'design');if(d.version!==1)fail('design version must be 1');validatePad(d.pad);

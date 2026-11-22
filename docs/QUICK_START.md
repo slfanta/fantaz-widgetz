@@ -5,10 +5,10 @@ host project and treat Widgetz as read-only. Changes to Fantaz Widgetz itself
 require explicit user authorization for the task. [Agent roles](../AGENTS.md)
 
 Use `@fantaz/widgetz` to render a compact pad inside a browser or WebView. In the
-host project, install the local 0.5.0 package. Adjust the path for your checkout.
+host project, install the 0.6.0 package from the GitHub release or your checkout.
 
 ```sh
-npm install C:/projs/fantaz-widgetz/releases/fantaz-widgetz-0.5.0.tgz
+npm install ./fantaz-widgetz-0.6.0.tgz
 ```
 
 Give the pad a mount element with room for its contents.
@@ -17,35 +17,29 @@ Give the pad a mount element with room for its contents.
 <div id="widget" style="width: 220px; height: 56px"></div>
 ```
 
-Run this TypeScript in the host frontend after the mount element exists. The
-example toggles local state. For a real operation, update the view after the
-host confirms the change.
+Save your design as `monitor.ftzml`, or start from the
+[connection monitor example](../public/templates/connection-monitor.ftzml).
+
+```xml
+<ftzml version="1">
+  <pad id="monitor">
+    <row id="status">
+      <led id="activity" state="on" label="Downloading"/>
+      <text id="message">Downloading</text>
+    </row>
+    <progress id="download" value="0.77" label="Download progress" color="#ffc840"/>
+  </pad>
+</ftzml>
+```
+
+Read the bundled FTZML as text in your host and pass it to the view.
 
 ```ts
 import { mount } from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
 
 const view = mount(document.querySelector<HTMLElement>('#widget')!);
-let enabled = false;
-
-function render() {
-  view.update({
-    type: 'pad', id: 'settings', children: [{
-      type: 'row', id: 'feature-row', children: [
-        { type: 'text', id: 'name', content: 'Feature' },
-        { type: 'switch', id: 'power', label: 'Feature enabled',
-          state: enabled ? 'on' : 'off', action: 'toggle-feature' },
-      ],
-    }],
-  });
-}
-
-view.onAction(action => {
-  if (action !== 'toggle-feature') return;
-  enabled = !enabled;
-  render();
-});
-render();
+view.loadFTZML(xmlText);
+view.setProgress('download', 0.82);
 // Call view.destroy() when the host removes the pad.
 ```
 
@@ -55,7 +49,7 @@ render();
   WebView2 applies Windows display scaling. [API](API.md)
 - **Switch.** Set `state` from the host. For custom colors, use `onColor` and
   `offColor`. Widgetz derives the circle and hover fills. [Switch guide](ON_OFF_CONTROL.md)
-- **Saved layouts.** Load with `view.load(parseFTZML(xml))` and save with
+- **Saved layouts.** Load with `view.loadFTZML(xml)` and save with
   `saveFTZML(view.design())`. [FTZML](FTZML.md)
 - **Draggable desktop pads.** In a Tauri 2 window, import `enableWindowDrag`
   from `@fantaz/widgetz/tauri` and call `const stopDragging = enableWindowDrag(element)`

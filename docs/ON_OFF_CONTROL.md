@@ -1,13 +1,12 @@
 # Fantaz Widgetz on/off control
 
-Library and demo 0.5.0, 2026-11-20 (Asia/Taipei). This is a reusable
+Library and demo 0.6.0, 2026-11-22 (Asia/Taipei). This is a reusable
 Fantaz Widgetz control. It has no dependency on a downloader, routing app,
 website, server, registry setting or other project's state.
 
 Read this guide before reusing or changing the control. The implementation is
-`packages/widgetz/src/{types,switch,renderer,validate,ftzml}.ts` and `style.css`.
-Import the public package and its stylesheet; do not copy its DOM/CSS into a
-consumer or add extra theme knobs.
+`packages/widgetz/src/{types,switch,renderer,validate,ftzml,styles}.ts`.
+Use the public package and edit the switch in its FTZML design.
 
 ## Appearance contract
 
@@ -85,7 +84,6 @@ labels with an adjacent normal text widget rather than drawing text in the switc
 
 ```ts
 import { mount, type Pad } from '@fantaz/widgetz';
-import '@fantaz/widgetz/style.css';
 
 let enabled = false;
 const view = mount(document.querySelector<HTMLElement>('#widget')!);
